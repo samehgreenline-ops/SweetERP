@@ -1,104 +1,114 @@
 import { useState } from "react";
-import ProductForm from "../../components/products/ProductForm";
 
-function Products() {
-  const [showForm, setShowForm] = useState(false);
+function ProductForm({ onAdd }) {
+  const [product, setProduct] = useState({
+    code: "",
+    name: "",
+    category: "",
+    cost: "",
+    price: "",
+    status: "نشط",
+  });
 
-  const [products, setProducts] = useState([
-    {
-      code: "1001",
-      name: "تورتة شوكولاتة",
-      category: "تورت",
-      cost: 165,
-      price: 250,
+  const handleChange = (e) => {
+    setProduct({
+      ...product,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = () => {
+    if (
+      product.code === "" ||
+      product.name === ""
+    ) {
+      alert("برجاء إدخال البيانات المطلوبة");
+      return;
+    }
+
+    onAdd(product);
+
+    setProduct({
+      code: "",
+      name: "",
+      category: "",
+      cost: "",
+      price: "",
       status: "نشط",
-    },
-    {
-      code: "1002",
-      name: "جاتوه",
-      category: "حلويات",
-      cost: 28,
-      price: 45,
-      status: "نشط",
-    },
-  ]);
-
-  function handleSave(product) {
-    setProducts([
-      ...products,
-      {
-        ...product,
-        status: "نشط",
-      },
-    ]);
-
-    setShowForm(false);
-  }
+    });
+  };
 
   return (
-    <div style={{ direction: "rtl" }}>
-      <h1>📦 إدارة الأصناف</h1>
+    <div
+      style={{
+        background: "white",
+        padding: 20,
+        borderRadius: 10,
+        marginBottom: 30,
+        boxShadow: "0 2px 8px rgba(0,0,0,.1)",
+      }}
+    >
+      <h2>➕ إضافة صنف جديد</h2>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(2,1fr)",
+          gap: 15,
+        }}
+      >
+        <input
+          name="code"
+          placeholder="الكود"
+          value={product.code}
+          onChange={handleChange}
+        />
+
+        <input
+          name="name"
+          placeholder="اسم الصنف"
+          value={product.name}
+          onChange={handleChange}
+        />
+
+        <input
+          name="category"
+          placeholder="الفئة"
+          value={product.category}
+          onChange={handleChange}
+        />
+
+        <input
+          name="cost"
+          placeholder="التكلفة"
+          value={product.cost}
+          onChange={handleChange}
+        />
+
+        <input
+          name="price"
+          placeholder="سعر البيع"
+          value={product.price}
+          onChange={handleChange}
+        />
+      </div>
 
       <button
-        onClick={() => setShowForm(true)}
+        onClick={handleSubmit}
         style={{
+          marginTop: 20,
+          padding: "10px 25px",
           background: "#1565c0",
           color: "white",
-          border: "none",
-          padding: "10px 20px",
-          borderRadius: "8px",
+          border: 0,
+          borderRadius: 8,
           cursor: "pointer",
-          marginBottom: "20px",
         }}
       >
-        + إضافة صنف
+        حفظ الصنف
       </button>
-
-      {showForm && (
-        <ProductForm
-          onSave={handleSave}
-          onCancel={() => setShowForm(false)}
-        />
-      )}
-
-      <table
-        style={{
-          width: "100%",
-          borderCollapse: "collapse",
-          background: "white",
-        }}
-      >
-        <thead
-          style={{
-            background: "#1565c0",
-            color: "white",
-          }}
-        >
-          <tr>
-            <th>الكود</th>
-            <th>اسم الصنف</th>
-            <th>الفئة</th>
-            <th>التكلفة</th>
-            <th>سعر البيع</th>
-            <th>الحالة</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {products.map((p, index) => (
-            <tr key={index}>
-              <td>{p.code}</td>
-              <td>{p.name}</td>
-              <td>{p.category}</td>
-              <td>{p.cost}</td>
-              <td>{p.price}</td>
-              <td>{p.status}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
     </div>
   );
 }
 
-export default Products;
+export default ProductForm;

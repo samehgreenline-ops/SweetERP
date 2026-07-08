@@ -11,8 +11,6 @@ function MainLayout() {
         background: "#f4f6f9",
       }}
     >
-      {/* القائمة الجانبية */}
-
       <aside
         style={{
           width: "250px",
@@ -31,7 +29,7 @@ function MainLayout() {
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "12px",
+            gap: "15px",
             marginTop: "25px",
           }}
         >
@@ -56,22 +54,14 @@ function MainLayout() {
           </Link>
 
           <span>🥛 الخامات</span>
-
           <span>🏭 الإنتاج</span>
-
           <span>🛒 المشتريات</span>
-
           <span>💰 المبيعات</span>
-
           <span>👥 العملاء</span>
-
           <span>🚚 الموردون</span>
-
           <span>📊 التقارير</span>
         </nav>
       </aside>
-
-      {/* منطقة المحتوى */}
 
       <main
         style={{

@@ -1,9 +1,9 @@
 function Dashboard() {
   return (
-    <div>
+    <>
       <h1>🏠 لوحة التحكم</h1>
 
-      <p>مرحبًا بك في SweetERP</p>
+      <h2>مرحباً بك في SweetERP</h2>
 
       <div
         style={{
@@ -52,7 +52,7 @@ function Dashboard() {
           <h2>0 جنيه</h2>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
