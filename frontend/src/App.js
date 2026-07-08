@@ -1,29 +1,20 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import MainLayout from "./layouts/MainLayout";
+
+import Dashboard from "./pages/dashboard/Dashboard";
+import Products from "./pages/products/Products";
+
 function App() {
   return (
-    <div
-      style={{
-        direction: "rtl",
-        fontFamily: "Tahoma",
-        textAlign: "center",
-        marginTop: "120px",
-      }}
-    >
-      <h1>🍰 SweetERP</h1>
-
-      <h2>نظام إدارة مصانع ومحلات الحلويات</h2>
-
-      <p>الإصدار التجريبي 0.1</p>
-
-      <button
-        style={{
-          padding: "12px 30px",
-          fontSize: "18px",
-          cursor: "pointer",
-        }}
-      >
-        دخول النظام
-      </button>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="products" element={<Products />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
