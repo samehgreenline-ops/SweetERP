@@ -1,0 +1,15 @@
+# Backup copies
+backup_phase_items_ok/
+
+# Test folders
+testvite/
+
+# Temporary folders
+git/
+
+# Old frontend versions
+frontend/build/
+frontend/node_modules/
+
+# Node dependencies
+**/node_modules/
