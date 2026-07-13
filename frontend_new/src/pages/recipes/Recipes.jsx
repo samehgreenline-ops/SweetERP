@@ -1,76 +1,118 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { Box, Button } from "@mui/material";
-
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+} from "@mui/material";
 
 import RecipeHeader from "../../components/recipes/RecipeHeader.jsx";
 import RecipeItemsTable from "../../components/recipes/RecipeItemsTable.jsx";
 import RecipeItemDialog from "../../components/recipes/RecipeItemDialog.jsx";
 import RecipeSummary from "../../components/recipes/RecipeSummary.jsx";
 
-
-import {
-  getItems,
-} from "../../services/itemService.js";
-
-
-import {
-  addRecipe,
-} from "../../services/recipeService.js";
-
+import { apiGet } from "../../services/api.js";
+import { addRecipe } from "../../services/recipeService.js";
 
 
 function Recipes() {
 
 
-  const allItems = getItems();
+  const [allItems, setAllItems] = useState([]);
 
+  const [products, setProducts] = useState([]);
 
-  const products = allItems.filter(
-    item =>
-      item.itemType === "FINISHED_PRODUCT"
-  );
+  const [materials, setMaterials] = useState([]);
 
+  const [recipes, setRecipes] = useState([]);
 
-  const materials = allItems.filter(
-    item =>
-      item.itemType === "RAW_MATERIAL" ||
-      item.itemType === "SEMI_FINISHED"
-  );
-
+  const [loadOpen, setLoadOpen] = useState(false);
 
 
   const [recipe, setRecipe] = useState({
-
     productId: "",
     outputQty: "",
     outputUnit: "",
-
   });
-
 
 
   const [items, setItems] = useState([]);
 
-
-
   const [open, setOpen] = useState(false);
 
 
+  const [item, setItem] = useState({
+    materialId: "",
+    qty: 0,
+    unit: "",
+  });
 
-  const [item, setItem] = useState({});
+
+
+  useEffect(() => {
+
+
+    async function loadData() {
+
+      try {
+
+        const data = await apiGet("/items");
+
+        setAllItems(data);
+
+
+        setProducts(
+          data.filter(
+            item => item.itemType === "FINISHED_PRODUCT"
+          )
+        );
+
+
+        setMaterials(
+          data.filter(
+            item =>
+              item.itemType === "RAW_MATERIAL" ||
+              item.itemType === "SEMI_FINISHED"
+          )
+        );
+
+
+        const recipesData = await apiGet("/recipes");
+
+        setRecipes(recipesData);
+
+
+      } catch (error) {
+
+        alert(error.message);
+
+      }
+
+    }
+
+
+    loadData();
+
+
+  }, []);
+
+
 
 
 
   const handleAddItem = () => {
 
     setItem({
-
       materialId: "",
       qty: 0,
       unit: "",
-      cost: 0,
-
     });
 
 
@@ -80,30 +122,38 @@ function Recipes() {
 
 
 
+
+
   const handleSaveItem = () => {
 
 
     const material =
       materials.find(
-        m => m.id === item.materialId
+        m => m.id === Number(item.materialId)
       );
+
+
+    if (!material) {
+
+      alert("اختر المادة أولاً");
+      return;
+
+    }
 
 
     const newItem = {
 
       id: Date.now(),
 
-      name: material
-        ? material.name
-        : "",
+      materialId: material.id,
+
+      name: material.name,
 
       qty: Number(item.qty),
 
-      unit: item.unit,
+      unit: item.unit || material.baseUnit,
 
-      cost: material
-        ? Number(material.purchasePrice || 0)
-        : 0,
+      cost: Number(material.purchasePrice || 0),
 
     };
 
@@ -121,27 +171,54 @@ function Recipes() {
 
 
 
-  const handleSaveRecipe = () => {
 
 
-    const newRecipe = {
-
-      ...recipe,
-
-      outputQty: Number(recipe.outputQty),
-
-      items,
-
-    };
+  const handleSaveRecipe = async () => {
 
 
-    addRecipe(newRecipe);
+    try {
 
 
-    alert("تم حفظ الوصفة بنجاح");
+      const data = await addRecipe({
+
+        ...recipe,
+
+        productId: Number(recipe.productId),
+
+        outputQty: Number(recipe.outputQty),
+
+        items,
+
+      });
+
+
+
+      alert(
+        `تم حفظ الوصفة بنجاح - التكلفة ${data.totalCost.toFixed(2)} جنيه`
+      );
+
+
+      setItems([]);
+
+
+      const recipesData = await apiGet("/recipes");
+
+      setRecipes(recipesData);
+
+
+
+    } catch (error) {
+
+
+      alert(error.message);
+
+
+    }
 
 
   };
+
+
 
 
 
@@ -149,7 +226,7 @@ function Recipes() {
 
     <Box
       sx={{
-        direction: "rtl",
+        direction:"rtl",
       }}
     >
 
@@ -165,12 +242,14 @@ function Recipes() {
       />
 
 
+
+
       <Button
         variant="contained"
         onClick={handleAddItem}
         sx={{
-          marginBottom: 2,
-          marginLeft: 2,
+          marginBottom:2,
+          marginLeft:2,
         }}
       >
         إضافة مكون
@@ -180,14 +259,29 @@ function Recipes() {
 
       <Button
         variant="contained"
+        color="primary"
+        onClick={() => setLoadOpen(true)}
+        sx={{
+          marginBottom:2,
+          marginLeft:2,
+        }}
+      >
+        تحميل وصفة موجودة
+      </Button>
+
+
+
+      <Button
+        variant="contained"
         color="success"
         onClick={handleSaveRecipe}
         sx={{
-          marginBottom: 2,
+          marginBottom:2,
         }}
       >
         حفظ الوصفة
       </Button>
+
 
 
 
@@ -196,6 +290,7 @@ function Recipes() {
         items={items}
 
       />
+
 
 
 
@@ -209,13 +304,13 @@ function Recipes() {
 
 
 
+
+
       <RecipeItemDialog
 
         open={open}
 
-        onClose={() =>
-          setOpen(false)
-        }
+        onClose={() => setOpen(false)}
 
         onSave={handleSaveItem}
 
@@ -228,9 +323,91 @@ function Recipes() {
       />
 
 
+
+
+
+      <Dialog
+
+        open={loadOpen}
+
+        onClose={() => setLoadOpen(false)}
+
+      >
+
+
+        <DialogTitle>
+          تحميل وصفة موجودة
+        </DialogTitle>
+
+
+
+        <DialogContent>
+
+
+          <List>
+
+
+            {recipes.map((r) => (
+
+
+              <ListItem
+                key={r.id}
+                disablePadding
+              >
+
+
+                <ListItemButton>
+
+
+                  <ListItemText
+
+                    primary={r.productName}
+
+                    secondary={
+                      `تكلفة الوصفة: ${r.totalCost} جنيه`
+                    }
+
+                  />
+
+
+                </ListItemButton>
+
+
+              </ListItem>
+
+
+            ))}
+
+
+          </List>
+
+
+        </DialogContent>
+
+
+
+        <DialogActions>
+
+
+          <Button
+            onClick={() => setLoadOpen(false)}
+          >
+            إغلاق
+          </Button>
+
+
+        </DialogActions>
+
+
+
+      </Dialog>
+
+
+
     </Box>
 
   );
+
 
 }
 

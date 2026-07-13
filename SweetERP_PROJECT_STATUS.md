@@ -1,200 +1,397 @@
 # SweetERP_PROJECT_STATUS
 
-## تعريف المشروع
-اسم المشروع: SweetERP
-
-الهدف:
-إنشاء نظام ERP كامل لإدارة مصنع/محل حلويات يشمل:
-- الأصناف
-- المخزون
-- الإنتاج
-- الوصفات
-- التكاليف
-- المشتريات
-- المبيعات
-- المحاسبة
-- التقارير
-- المستخدمين والصلاحيات
+> **المرجع الرسمي للمشروع**
+>
+> يجب اعتبار هذا الملف المرجع الأساسي في أي محادثة جديدة وعدم البدء من الصفر.
+>
+> يتم تحديثه بعد كل مرحلة مستقرة وبعد كل Git Commit و Git Push ناجحين.
 
 ---
 
-# آخر حالة محفوظة
+# معلومات المشروع
 
-Git Repository:
+**اسم المشروع**
+
+SweetERP
+
+**الهدف**
+
+إنشاء نظام ERP عربي متكامل لإدارة مصانع ومحلات الحلويات يشمل:
+
+* إدارة الأصناف
+* الوصفات
+* الإنتاج
+* المخزون
+* المشتريات
+* المبيعات
+* الموردين
+* العملاء
+* التكاليف
+* التقارير
+* الحسابات (مرحلة لاحقة)
+* المستخدمين والصلاحيات
+* النسخ الاحتياطي
+
+---
+
+# مسار المشروع
+
+```text
+C:\Users\sameh\Desktop\SweetERP
+```
+
+---
+
+# مستودع GitHub
+
 https://github.com/samehgreenline-ops/SweetERP
 
-آخر Commit محفوظ:
-3e64a31
+الفرع المستخدم:
 
-المسار الرئيسي:
-C:\Users\sameh\Desktop\SweetERP
+```text
+main
+```
 
-المشروع الحالي:
+---
+
+# الإصدار الحالي
+
+**Version**
+
+0.3 Stable
+
+**آخر Commit مستقر**
+
+```text
+ef81eed
+```
+
+**Commit Message**
+
+```text
+Add stable backend API and database
+```
+
+هذه هي نقطة الرجوع الرسمية في حالة حدوث أي مشكلة.
+
+---
+
+# هيكل المشروع
+
+## Frontend الرسمي
+
+```text
 frontend_new
+```
+
+> هذا هو المشروع الذي يتم تطويره.
 
 ---
 
-# التقنية المستخدمة
+## Frontend القديم
 
-- React
-- Vite
-- Material UI
-- JavaScript
-- GitHub
+```text
+frontend
+```
+
+> لا يتم التعديل عليه إلا إذا كان هناك سبب واضح.
 
 ---
 
-# ما تم إنجازه
+## Backend
 
-## 1- إنشاء المشروع
-- إنشاء مشروع React جديد.
-- تجهيز هيكل الصفحات والمكونات.
-- ربط المشروع مع GitHub.
-- حفظ نسخة frontend_new.
+```text
+backend
+```
 
-## 2- الأصناف
+---
+
+# التقنيات المستخدمة
+
+## Frontend
+
+* React
+* Vite
+* Material UI
+* JavaScript
+
+## Backend
+
+* Node.js
+* Express
+
+## Database
+
+* SQLite
+* better-sqlite3
+
+## Version Control
+
+* Git
+* GitHub
+
+---
+
+# حالة النظام الحالية
+
+## Backend
+
+يعمل بنجاح.
+
+التشغيل:
+
+```text
+npm start
+```
+
+العنوان:
+
+```text
+http://localhost:3001
+```
+
+تم اختبار الاتصال بنجاح.
+
+---
+
+## Frontend
+
+يعمل بنجاح.
+
+التشغيل:
+
+```text
+npm run dev
+```
+
+مرتبط مباشرة بالـ Backend.
+
+---
+
+## قاعدة البيانات
+
+SQLite
+
+المسار:
+
+```text
+backend/db/sweeterp.db
+```
 
 تم إنشاء:
-- إدارة الأصناف.
-- أنواع الأصناف:
-  - FINISHED_PRODUCT منتج نهائي
-  - RAW_MATERIAL خامات
-  - SEMI_FINISHED منتجات نصف مصنعة
 
-تم العمل على:
-- الوحدات.
-- التحويلات بين الكيلو والجرام واللتر.
+* database.js
+* schema.sql
+* migrate.js
+
+ويتم تنفيذ التحديثات تلقائياً.
 
 ---
 
-# 3- الوصفات
+# الجداول الموجودة
 
-الملفات الموجودة:
-
-src/components/recipes/
-
-- RecipeHeader.jsx
-- RecipeItemsTable.jsx
-- RecipeItemDialog.jsx
-- RecipeSummary.jsx
-
-
-src/pages/recipes/
-
-- Recipes.jsx
-
-
-الوظائف الموجودة:
-- اختيار المنتج الناتج.
-- إضافة مكونات للوصفة.
-- حفظ الوصفة.
-- حسابات أولية للتكلفة.
+* items
+* recipes
+* recipe_items
+* inventory_movements
+* production_orders
+* suppliers
+* customers
+* purchases
+* purchase_items
+* sales
+* sale_items
 
 ---
 
-# 4- الخدمات
+# الوحدات المنجزة
 
-موجود:
+## 1. الأصناف (Items)
 
-src/services/
+مكتملة.
 
-- itemService.js
-- recipeService.js
+تشمل:
+
+* إضافة صنف
+* تعديل صنف
+* حذف صنف
+* عرض الأصناف
+* أنواع الأصناف
+* الوحدات
+* أسعار الشراء
+* أسعار البيع
+* المخزون
+* تتبع المخزون
+* Reorder Level
+* Notes
+
+مرتبطة بالكامل بقاعدة البيانات.
 
 ---
 
-# المشكلة الحالية
+## 2. Backend API
 
-المشكلة:
-حقل "كمية الإنتاج" outputQty في الوصفات لا يقبل الإدخال.
+تم إنشاء Routes التالية:
 
-المكان الأساسي:
-
-src/components/recipes/RecipeHeader.jsx
-
+* items
+* recipes
+* inventory
+* production
+* purchases
+* sales
+* suppliers
+* customers
+* reports
 
 ---
 
-# ما تم تجربته سابقاً (لا يعاد)
+## 3. قاعدة البيانات
 
-1- تغيير defaultValue إلى value:
+تم إنشاء وربط قاعدة البيانات بنجاح.
 
-value={recipe.outputQty ?? ""}
+---
 
+## 4. Git
 
-2- التأكد من onChange:
+تم إنشاء نقاط حفظ مستقرة ورفعها إلى GitHub.
 
-outputQty: e.target.value
+---
 
+# ما تم اختباره
 
-3- مراجعة Recipes.jsx:
+✔ تشغيل Backend
 
-تم التأكد من:
-- وجود outputQty في useState.
-- تمرير setRecipe إلى RecipeHeader.
-- الحفظ يستخدم Number(recipe.outputQty).
+✔ تشغيل Frontend
 
+✔ الاتصال بينهما
 
-4- البحث عن نسخ أخرى:
+✔ API
 
-تم البحث عن:
-- outputQty
-- RecipeHeader
+✔ إضافة صنف
 
-ولا توجد نسخة أخرى.
+✔ تعديل صنف
+
+✔ حذف صنف
+
+✔ حفظ البيانات داخل SQLite
+
+✔ الاتصال بين Frontend و Backend
+
+✔ Git Commit
+
+✔ Git Push
+
+---
+
+# المرحلة الحالية
+
+Recipes Module
+
+سيتم تنفيذ:
+
+* مراجعة شاشة الوصفات.
+* ربط الوصفات بقاعدة البيانات.
+* إضافة الخامات.
+* حساب تكلفة الوصفة.
+* دعم تحويل الوحدات.
+* اختبار كامل.
+* Git Commit.
+* Git Push.
+
+---
+
+# المراحل القادمة
+
+بعد الانتهاء من Recipes:
+
+1. Production
+2. Inventory
+3. Purchases
+4. Sales
+5. Reports
+6. Accounting
+7. Users & Permissions
+8. Backup & Restore
+
+---
+
+# Known Issues
+
+حالياً لا توجد مشاكل معروفة تعيق المشروع.
+
+أي مشكلة جديدة يتم تسجيلها هنا حتى لا يتم نسيانها.
+
+---
+
+# Future Improvements
+
+* Barcode
+* QR Code
+* Dashboard احترافي
+* صلاحيات المستخدمين
+* تعدد الفروع
+* الطباعة الاحترافية
+* تصدير PDF
+* تصدير Excel
+* النسخ الاحتياطي التلقائي
 
 ---
 
 # قواعد العمل
 
-- لا إعادة لأي تجربة تم تنفيذها.
-- أي تعديل يجب أن يكون بعد تحديد سبب المشكلة.
-- تعديل ملف واحد في كل مرة.
-- تجربة بعد كل تعديل.
-- حفظ Git بعد المراحل المهمة.
+يلتزم المشروع بالقواعد التالية:
+
+1. إرسال الملفات كاملة عند التعديل، وليس أجزاءً منها.
+2. عدم إعادة تنفيذ أي مرحلة مكتملة.
+3. اختبار كل مرحلة قبل الانتقال للمرحلة التالية.
+4. بعد نجاح أي مرحلة يتم تنفيذ:
+
+```text
+git status
+git add
+git commit
+git push
+```
+
+5. بعد كل Commit ناجح يتم تحديث هذا الملف.
+6. يعتبر هذا الملف المرجع الرسمي للمشروع.
+7. Frontend الرسمي هو frontend_new فقط.
+8. مصدر البيانات الرسمي هو Backend + SQLite.
+9. لا يتم استخدام LocalStorage إلا إذا كان ذلك مقصوداً.
 
 ---
 
-# نقطة البداية القادمة
+# سجل الإصدارات
 
-تشخيص دورة البيانات:
+## Version 0.3 Stable
 
-TextField
-↓
-onChange
-↓
-setRecipe
-↓
-state داخل Recipes.jsx
-↓
-العرض والحفظ
+تم إنجاز:
 
-الهدف:
-معرفة أين تضيع قيمة outputQty.
+* Backend كامل
+* Database
+* API
+* Items Module
+* الربط بين Frontend و Backend
+* GitHub Stable Backup
 
 ---
 
-# ملاحظات مهمة
+# آخر تحديث
 
-تم إهدار وقت سابق بسبب:
-- تكرار بعض الحلول.
-- عدم وجود سجل ثابت للمشروع.
-- الانتقال بين مسارات مختلفة.
+13 يوليو 2026
 
-يجب اعتبار هذا الملف المرجع الأساسي وعدم البدء من الصفر.
+آخر Commit مستقر:
 
----
+```text
+ef81eed
+```
 
-# المرحلة النهائية المطلوبة
+Commit Message:
 
-SweetERP كامل بخصائص ERP:
+```text
+Add stable backend API and database
+```
 
-- إدارة المخزون.
-- الإنتاج.
-- تكلفة الإنتاج.
-- المشتريات.
-- المبيعات.
-- الحسابات.
-- التقارير.
-- المستخدمون والصلاحيات.
-- النسخ الاحتياطي.
+الحالة:
+
+المشروع مستقر ويمكن استكمال التطوير مباشرة من وحدة Recipes دون إعادة أي خطوة سابقة.
