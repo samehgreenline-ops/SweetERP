@@ -1,4 +1,4 @@
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, NavLink } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -8,45 +8,24 @@ import {
   ListItemButton,
   ListItemText,
 } from "@mui/material";
+import { useLocation } from "react-router-dom";
 
 
 const menuItems = [
-  {
-    text: "الرئيسية",
-    path: "/",
-  },
-  {
-    text: "الأصناف",
-    path: "/items",
-  },
-  {
-    text: "المخزون",
-    path: "/inventory",
-  },
-  {
-    text: "الوصفات",
-    path: "/recipes",
-  },
-  {
-    text: "الإنتاج",
-    path: "/production",
-  },
-  {
-    text: "المبيعات",
-    path: "/sales",
-  },
-  {
-    text: "المشتريات",
-    path: "/purchases",
-  },
-  {
-    text: "التقارير",
-    path: "/reports",
-  },
+  { text: "الرئيسية", path: "/" },
+  { text: "الأصناف", path: "/items" },
+  { text: "المخزون", path: "/inventory" },
+  { text: "الوصفات", path: "/recipes" },
+  { text: "الإنتاج", path: "/production" },
+  { text: "المبيعات", path: "/sales" },
+  { text: "المشتريات", path: "/purchases" },
+  { text: "التقارير", path: "/reports" },
 ];
 
 
 function MainLayout() {
+
+  const location = useLocation();
 
   return (
 
@@ -62,6 +41,12 @@ function MainLayout() {
       <Drawer
         variant="permanent"
         anchor="right"
+        sx={{
+          "& .MuiDrawer-paper": {
+            width: 240,
+            boxSizing: "border-box",
+          },
+        }}
       >
 
         <Box
@@ -93,8 +78,13 @@ function MainLayout() {
               >
 
                 <ListItemButton
-                  component={Link}
+                  component={NavLink}
                   to={item.path}
+                  selected={location.pathname === item.path}
+                  sx={{
+                    textAlign: "right",
+                    color: "inherit",
+                  }}
                 >
 
                   <ListItemText

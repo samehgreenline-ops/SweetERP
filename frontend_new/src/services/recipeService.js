@@ -1,49 +1,41 @@
-const KEY = "sweeterp_recipes";
+import { apiGet, apiPost, apiPut, apiDelete } from "./api.js";
 
-
-export function getRecipes() {
-
-  const data = localStorage.getItem(KEY);
-
-  return data
-    ? JSON.parse(data)
-    : [];
-
+export async function getRecipes() {
+  return apiGet("/recipes");
 }
 
-
-
-export function saveRecipes(recipes) {
-
-  localStorage.setItem(
-    KEY,
-    JSON.stringify(recipes)
-  );
-
+export async function getRecipe(id) {
+  return apiGet(`/recipes/${id}`);
 }
 
+export async function addRecipe(recipe) {
+  return apiPost("/recipes", {
+    productId: recipe.productId,
+    outputQty: recipe.outputQty,
+    outputUnit: recipe.outputUnit,
+    notes: recipe.notes,
+    items: recipe.items.map((item) => ({
+      materialId: item.materialId,
+      qty: item.qty,
+      unit: item.unit,
+    })),
+  });
+}
 
+export async function updateRecipe(recipe) {
+  return apiPut(`/recipes/${recipe.id}`, {
+    productId: recipe.productId,
+    outputQty: recipe.outputQty,
+    outputUnit: recipe.outputUnit,
+    notes: recipe.notes,
+    items: recipe.items.map((item) => ({
+      materialId: item.materialId,
+      qty: item.qty,
+      unit: item.unit,
+    })),
+  });
+}
 
-export function addRecipe(recipe) {
-
-  const recipes = getRecipes();
-
-
-  const newRecipe = {
-
-    id: Date.now(),
-
-    ...recipe,
-
-  };
-
-
-  saveRecipes([
-    ...recipes,
-    newRecipe,
-  ]);
-
-
-  return newRecipe;
-
+export async function deleteRecipe(id) {
+  return apiDelete(`/recipes/${id}`);
 }

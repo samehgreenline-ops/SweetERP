@@ -1,107 +1,43 @@
-const KEY = "sweeterp_items";
+import { apiGet, apiPost, apiPut, apiDelete } from "./api.js";
 
+export { ITEM_TYPES, UNITS } from "../utils/constants.js";
 
-export function getItems() {
-  const data = localStorage.getItem(KEY);
-
-  if (!data) {
-    return [];
-  }
-
-  return JSON.parse(data);
+export async function getItems() {
+  return apiGet("/items");
 }
 
-
-export function saveItems(items) {
-  localStorage.setItem(KEY, JSON.stringify(items));
+export async function getItem(id) {
+  return apiGet(`/items/${id}`);
 }
 
-
-export function addItem(item) {
-  const items = getItems();
-
-  const newItem = {
-    id: Date.now(),
-    active: true,
-    trackInventory: true,
-    ...item,
-  };
-
-  items.push(newItem);
-
-  saveItems(items);
-
-  return newItem;
+export async function addItem(item) {
+  return apiPost("/items", {
+    name: item.name,
+    code: item.code,
+    item_type: item.itemType,
+    base_unit: item.baseUnit,
+    purchase_price: item.purchasePrice,
+    sale_price: item.salePrice,
+    active: item.active,
+    track_inventory: item.trackInventory,
+    stock_qty: item.stockQty,
+  });
 }
 
-
-export function updateItem(updatedItem) {
-
-  const items = getItems();
-
-  const newItems = items.map(item =>
-    item.id === updatedItem.id
-      ? updatedItem
-      : item
-  );
-
-  saveItems(newItems);
-
-  return updatedItem;
+export async function updateItem(item) {
+  return apiPut(`/items/${item.id}`, {
+    name: item.name,
+    code: item.code,
+    item_type: item.itemType,
+    base_unit: item.baseUnit,
+    purchase_price: item.purchasePrice,
+    sale_price: item.salePrice,
+    active: item.active,
+    track_inventory: item.trackInventory,
+    stock_qty: item.stockQty,
+  });
 }
 
-
-export function deleteItem(id) {
-
-  const items = getItems();
-
-  const newItems = items.filter(
-    item => item.id !== id
-  );
-
-  saveItems(newItems);
+export async function deleteItem(id) {
+  return apiDelete(`/items/${id}`);
 }
-
-
-export const ITEM_TYPES = [
-  {
-    value: "RAW_MATERIAL",
-    label: "خامة"
-  },
-  {
-    value: "FINISHED_PRODUCT",
-    label: "منتج نهائي"
-  },
-  {
-    value: "SEMI_FINISHED",
-    label: "نصف مصنع"
-  },
-  {
-    value: "PACKAGING",
-    label: "عبوة"
-  },
-  {
-    value: "SERVICE",
-    label: "خدمة"
-  }
-];
-
-
-export const UNITS = [
-  {
-    value: "KG",
-    label: "كيلوجرام"
-  },
-  {
-    value: "GRAM",
-    label: "جرام"
-  },
-  {
-    value: "LITER",
-    label: "لتر"
-  },
-  {
-    value: "PIECE",
-    label: "قطعة"
-  }
-];

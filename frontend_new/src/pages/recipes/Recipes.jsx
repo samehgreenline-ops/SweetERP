@@ -43,7 +43,7 @@ function Recipes() {
   const [recipe, setRecipe] = useState({
 
     productId: "",
-    outputQty: 0,
+    outputQty: "",
     outputUnit: "",
 
   });
