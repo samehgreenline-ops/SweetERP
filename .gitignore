@@ -16,3 +16,7 @@ frontend/node_modules/
 
 # Invalid empty file
 frontend_new/src/package.json
+
+# SQLite temporary files
+**/*.db-shm
+**/*.db-wal
