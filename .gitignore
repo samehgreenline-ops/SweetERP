@@ -13,3 +13,6 @@ frontend/node_modules/
 
 # Node dependencies
 **/node_modules/
+
+# Invalid empty file
+frontend_new/src/package.json
