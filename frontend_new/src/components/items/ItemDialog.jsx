@@ -49,6 +49,7 @@ function ItemDialog({
           onChange={(e) => handleChange("name", e.target.value)}
         />
 
+
         <TextField
           label="كود الصنف"
           fullWidth
@@ -56,6 +57,7 @@ function ItemDialog({
           value={item.code || ""}
           onChange={(e) => handleChange("code", e.target.value)}
         />
+
 
         <TextField
           select
@@ -65,12 +67,15 @@ function ItemDialog({
           value={item.itemType || ""}
           onChange={(e) => handleChange("itemType", e.target.value)}
         >
+
           {ITEM_TYPES.map((type) => (
             <MenuItem key={type.value} value={type.value}>
               {type.label}
             </MenuItem>
           ))}
+
         </TextField>
+
 
         <TextField
           select
@@ -80,12 +85,15 @@ function ItemDialog({
           value={item.baseUnit || ""}
           onChange={(e) => handleChange("baseUnit", e.target.value)}
         >
+
           {UNITS.map((unit) => (
             <MenuItem key={unit.value} value={unit.value}>
               {unit.label}
             </MenuItem>
           ))}
+
         </TextField>
+
 
         <TextField
           label="سعر الشراء"
@@ -96,6 +104,7 @@ function ItemDialog({
           onChange={(e) => handleChange("purchasePrice", e.target.value)}
         />
 
+
         <TextField
           label="سعر البيع"
           type="number"
@@ -105,8 +114,9 @@ function ItemDialog({
           onChange={(e) => handleChange("salePrice", e.target.value)}
         />
 
+
         <TextField
-          label="رصيد افتتاحي"
+          label="الرصيد الافتتاحي"
           type="number"
           fullWidth
           margin="normal"
@@ -114,11 +124,35 @@ function ItemDialog({
           onChange={(e) => handleChange("stockQty", e.target.value)}
         />
 
+
+        <TextField
+          label="حد إعادة الطلب"
+          type="number"
+          fullWidth
+          margin="normal"
+          value={item.reorderLevel ?? ""}
+          onChange={(e) => handleChange("reorderLevel", e.target.value)}
+        />
+
+
+        <TextField
+          label="ملاحظات"
+          fullWidth
+          multiline
+          rows={3}
+          margin="normal"
+          value={item.notes || ""}
+          onChange={(e) => handleChange("notes", e.target.value)}
+        />
+
+
         <FormControlLabel
           control={
             <Switch
               checked={item.trackInventory !== false}
-              onChange={(e) => handleChange("trackInventory", e.target.checked)}
+              onChange={(e) =>
+                handleChange("trackInventory", e.target.checked)
+              }
             />
           }
           label="تتبع المخزون"
@@ -128,11 +162,17 @@ function ItemDialog({
 
 
       <DialogActions>
-        <Button onClick={onClose}>إلغاء</Button>
+
+        <Button onClick={onClose}>
+          إلغاء
+        </Button>
+
         <Button variant="contained" onClick={onSave}>
           حفظ
         </Button>
+
       </DialogActions>
+
 
     </Dialog>
 

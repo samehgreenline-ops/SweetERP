@@ -21,6 +21,8 @@ export async function addItem(item) {
     active: item.active,
     track_inventory: item.trackInventory,
     stock_qty: item.stockQty,
+    reorder_level: item.reorderLevel,
+    notes: item.notes,
   });
 }
 
@@ -35,6 +37,8 @@ export async function updateItem(item) {
     active: item.active,
     track_inventory: item.trackInventory,
     stock_qty: item.stockQty,
+    reorder_level: item.reorderLevel,
+    notes: item.notes,
   });
 }
 

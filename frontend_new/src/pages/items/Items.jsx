@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import {
   Box,
-  Button,
-  Typography,
   Alert,
   CircularProgress,
 } from "@mui/material";
@@ -33,10 +31,13 @@ function Items() {
     try {
       setLoading(true);
       setError("");
+
       const data = await getItems();
       setItems(data);
+
     } catch (err) {
       setError(err.message);
+
     } finally {
       setLoading(false);
     }
@@ -49,7 +50,9 @@ function Items() {
 
 
   const handleAdd = () => {
+
     setEditMode(false);
+
     setItem({
       name: "",
       code: "",
@@ -60,64 +63,94 @@ function Items() {
       trackInventory: true,
       active: true,
       stockQty: "",
+      reorderLevel: "",
+      notes: "",
     });
+
     setOpen(true);
   };
 
 
   const handleEdit = (selectedItem) => {
+
     setEditMode(true);
+
     setItem({
       ...selectedItem,
       purchasePrice: selectedItem.purchasePrice ?? "",
       salePrice: selectedItem.salePrice ?? "",
       stockQty: selectedItem.stockQty ?? "",
+      reorderLevel: selectedItem.reorderLevel ?? "",
+      notes: selectedItem.notes ?? "",
     });
+
     setOpen(true);
   };
 
 
   const handleDelete = async (id) => {
+
     if (!window.confirm("هل أنت متأكد من حذف هذا الصنف؟")) return;
 
     try {
+
       await deleteItem(id);
       await loadItems();
+
     } catch (err) {
+
       setError(err.message);
+
     }
   };
 
 
   const handleSave = async () => {
+
     try {
+
       const payload = {
         ...item,
+
         purchasePrice: Number(item.purchasePrice) || 0,
         salePrice: Number(item.salePrice) || 0,
         stockQty: Number(item.stockQty) || 0,
+        reorderLevel: Number(item.reorderLevel) || 0,
       };
 
+
       if (editMode) {
+
         await updateItem(payload);
+
       } else {
+
         await addItem(payload);
+
       }
+
 
       setOpen(false);
       await loadItems();
+
+
     } catch (err) {
+
       setError(err.message);
+
     }
+
   };
 
 
   if (loading) {
+
     return (
       <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
         <CircularProgress />
       </Box>
     );
+
   }
 
 
@@ -126,18 +159,25 @@ function Items() {
     <Box sx={{ direction: "rtl" }}>
 
       {error && (
-        <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError("")}>
+        <Alert
+          severity="error"
+          sx={{ mb: 2 }}
+          onClose={() => setError("")}
+        >
           {error}
         </Alert>
       )}
 
+
       <ItemToolbar onAdd={handleAdd} />
+
 
       <ItemTable
         items={items}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
+
 
       <ItemDialog
         open={open}
@@ -147,6 +187,7 @@ function Items() {
         setItem={setItem}
         editMode={editMode}
       />
+
 
     </Box>
 
