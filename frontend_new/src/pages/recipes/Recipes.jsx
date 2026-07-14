@@ -19,13 +19,16 @@ import RecipeItemDialog from "../../components/recipes/RecipeItemDialog.jsx";
 import RecipeSummary from "../../components/recipes/RecipeSummary.jsx";
 
 import { apiGet } from "../../services/api.js";
-import { addRecipe, getRecipe } from "../../services/recipeService.js";
+
+import {
+  addRecipe,
+  updateRecipe,
+  getRecipe,
+} from "../../services/recipeService.js";
 
 
 function Recipes() {
 
-
-  const [allItems, setAllItems] = useState([]);
 
   const [products, setProducts] = useState([]);
 
@@ -40,17 +43,19 @@ function Recipes() {
     productId: "",
     outputQty: "",
     outputUnit: "",
+    notes: "",
   });
 
 
   const [items, setItems] = useState([]);
+
 
   const [open, setOpen] = useState(false);
 
 
   const [item, setItem] = useState({
     materialId: "",
-    qty: 0,
+    qty: "",
     unit: "",
   });
 
@@ -58,28 +63,25 @@ function Recipes() {
 
   useEffect(() => {
 
-
     async function loadData() {
 
       try {
 
         const data = await apiGet("/items");
 
-        setAllItems(data);
-
 
         setProducts(
           data.filter(
-            item => item.itemType === "FINISHED_PRODUCT"
+            x => x.itemType === "FINISHED_PRODUCT"
           )
         );
 
 
         setMaterials(
           data.filter(
-            item =>
-              item.itemType === "RAW_MATERIAL" ||
-              item.itemType === "SEMI_FINISHED"
+            x =>
+              x.itemType === "RAW_MATERIAL" ||
+              x.itemType === "SEMI_FINISHED"
           )
         );
 
@@ -89,7 +91,7 @@ function Recipes() {
         setRecipes(recipesData);
 
 
-      } catch (error) {
+      } catch(error) {
 
         alert(error.message);
 
@@ -100,7 +102,6 @@ function Recipes() {
 
     loadData();
 
-
   }, []);
 
 
@@ -110,11 +111,10 @@ function Recipes() {
   const handleAddItem = () => {
 
     setItem({
-      materialId: "",
-      qty: 0,
-      unit: "",
+      materialId:"",
+      qty:"",
+      unit:"",
     });
-
 
     setOpen(true);
 
@@ -127,18 +127,19 @@ function Recipes() {
   const handleSaveItem = () => {
 
 
-    const material =
-      materials.find(
-        m => m.id === Number(item.materialId)
-      );
+    const material = materials.find(
+      m => m.id === Number(item.materialId)
+    );
 
 
-    if (!material) {
+    if(!material){
 
-      alert("اختر المادة أولاً");
+      alert("اختر المادة");
+
       return;
 
     }
+
 
 
     const newItem = {
@@ -151,16 +152,17 @@ function Recipes() {
 
       qty: Number(item.qty),
 
-      unit: item.unit || material.baseUnit,
+      unit: item.unit,
 
       cost: Number(material.purchasePrice || 0),
 
     };
 
 
+
     setItems([
       ...items,
-      newItem,
+      newItem
     ]);
 
 
@@ -179,26 +181,41 @@ function Recipes() {
     try {
 
 
-      const data = await addRecipe({
+      const recipeData = {
 
         ...recipe,
 
-        productId: Number(recipe.productId),
+        productId:Number(recipe.productId),
 
-        outputQty: Number(recipe.outputQty),
+        outputQty:Number(recipe.outputQty),
 
         items,
 
-      });
+      };
+
+
+
+      let result;
+
+
+
+      if(recipe.id){
+
+        result = await updateRecipe(recipeData);
+
+      }else{
+
+        result = await addRecipe(recipeData);
+
+      }
+
 
 
 
       alert(
-        `تم حفظ الوصفة بنجاح - التكلفة ${data.totalCost.toFixed(2)} جنيه`
+        `تم الحفظ - التكلفة ${Number(result.totalCost).toFixed(2)} جنيه`
       );
 
-
-      setItems([]);
 
 
       const recipesData = await apiGet("/recipes");
@@ -207,11 +224,64 @@ function Recipes() {
 
 
 
-    } catch (error) {
-
+    }catch(error){
 
       alert(error.message);
 
+    }
+
+
+  };
+  const handleLoadRecipe = async (recipeId) => {
+
+    try {
+
+      const data = await getRecipe(recipeId);
+
+
+      setRecipe({
+
+        id: data.id,
+
+        productId: data.productId,
+
+        outputQty: data.outputQty,
+
+        outputUnit: data.outputUnit,
+
+        notes: data.notes || "",
+
+      });
+
+
+
+      setItems(
+
+        data.items.map(item => ({
+
+          id: item.id,
+
+          materialId: item.materialId,
+
+          name: item.name,
+
+          qty: Number(item.qty),
+
+          unit: item.unit,
+
+          cost: Number(item.cost || 0),
+
+        }))
+
+      );
+
+
+      setLoadOpen(false);
+
+
+    }catch(error){
+
+      alert(error.message);
 
     }
 
@@ -219,46 +289,14 @@ function Recipes() {
   };
 
 
-const handleLoadRecipe = async (recipeId) => {
 
-  try {
-
-    const data = await getRecipe(recipeId);
-
-    setRecipe({
-      id: data.id,
-      productId: data.productId,
-      outputQty: data.outputQty,
-      outputUnit: data.outputUnit,
-    });
-
-    setItems(
-      data.items.map((item) => ({
-        id: item.id,
-        materialId: item.materialId,
-        name: item.name,
-        qty: Number(item.qty),
-        unit: item.unit,
-        cost: Number(item.cost || 0),
-      }))
-    );
-
-    setLoadOpen(false);
-
-  } catch (error) {
-
-    alert(error.message);
-
-  }
-
-};
 
 
   return (
 
     <Box
       sx={{
-        direction:"rtl",
+        direction:"rtl"
       }}
     >
 
@@ -277,42 +315,57 @@ const handleLoadRecipe = async (recipeId) => {
 
 
       <Button
+
         variant="contained"
+
         onClick={handleAddItem}
+
         sx={{
-          marginBottom:2,
-          marginLeft:2,
+          margin:1
         }}
+
       >
         إضافة مكون
       </Button>
 
 
 
+
       <Button
+
         variant="contained"
+
         color="primary"
+
         onClick={() => setLoadOpen(true)}
+
         sx={{
-          marginBottom:2,
-          marginLeft:2,
+          margin:1
         }}
+
       >
-        تحميل وصفة موجودة
+        تحميل وصفة
       </Button>
 
 
 
+
       <Button
+
         variant="contained"
+
         color="success"
+
         onClick={handleSaveRecipe}
+
         sx={{
-          marginBottom:2,
+          margin:1
         }}
+
       >
         حفظ الوصفة
       </Button>
+
 
 
 
@@ -322,6 +375,7 @@ const handleLoadRecipe = async (recipeId) => {
         items={items}
 
       />
+
 
 
 
@@ -368,7 +422,7 @@ const handleLoadRecipe = async (recipeId) => {
 
 
         <DialogTitle>
-          تحميل وصفة موجودة
+          اختيار وصفة
         </DialogTitle>
 
 
@@ -379,36 +433,34 @@ const handleLoadRecipe = async (recipeId) => {
           <List>
 
 
-            {recipes.map((r) => (
-
+            {recipes.map(r => (
 
               <ListItem
+
                 key={r.id}
-                disablePadding
+
               >
 
-
                 <ListItemButton
-  onClick={() => handleLoadRecipe(r.id)}
->
 
+                  onClick={() => handleLoadRecipe(r.id)}
+
+                >
 
                   <ListItemText
 
                     primary={r.productName}
 
                     secondary={
-                      `تكلفة الوصفة: ${r.totalCost} جنيه`
+                      `التكلفة: ${r.totalCost}`
                     }
 
                   />
-
 
                 </ListItemButton>
 
 
               </ListItem>
-
 
             ))}
 
@@ -424,7 +476,9 @@ const handleLoadRecipe = async (recipeId) => {
 
 
           <Button
+
             onClick={() => setLoadOpen(false)}
+
           >
             إغلاق
           </Button>
