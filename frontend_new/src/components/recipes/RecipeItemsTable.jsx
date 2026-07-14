@@ -6,6 +6,7 @@ import {
   TableHead,
   TableRow,
   Paper,
+  TextField,
 } from "@mui/material";
 
 
@@ -22,12 +23,11 @@ function convertDisplayQty(qty, unit) {
   }
 
   return value;
-
 }
 
 
 
-function RecipeItemsTable({ items }) {
+function RecipeItemsTable({ items, onUpdateQty }) {
 
 
   return (
@@ -39,17 +39,11 @@ function RecipeItemsTable({ items }) {
         <TableHead>
 
           <TableRow>
-
-            <TableCell>المادة</TableCell>
-
+            <TableCell>الصنف</TableCell>
             <TableCell>الكمية</TableCell>
-
             <TableCell>الوحدة</TableCell>
-
             <TableCell>تكلفة الوحدة</TableCell>
-
             <TableCell>الإجمالي</TableCell>
-
           </TableRow>
 
         </TableHead>
@@ -67,7 +61,24 @@ function RecipeItemsTable({ items }) {
 
 
               <TableCell>
-                {item.qty}
+
+                <TextField
+
+                  type="number"
+
+                  size="small"
+
+                  value={item.qty}
+
+                  onChange={(e)=>
+                    onUpdateQty(
+                      item.id,
+                      e.target.value
+                    )
+                  }
+
+                />
+
               </TableCell>
 
 
@@ -82,6 +93,7 @@ function RecipeItemsTable({ items }) {
 
 
               <TableCell>
+
                 {
                   (
                     convertDisplayQty(item.qty,item.unit)
@@ -89,6 +101,7 @@ function RecipeItemsTable({ items }) {
                     Number(item.cost)
                   ).toFixed(2)
                 }
+
               </TableCell>
 
 
@@ -96,9 +109,7 @@ function RecipeItemsTable({ items }) {
 
           ))}
 
-
         </TableBody>
-
 
       </Table>
 

@@ -172,10 +172,20 @@ function Recipes() {
   };
 
 
+  const handleUpdateItemQty = (id, qty) => {
 
+    setItems(
+      items.map(item =>
+        item.id === id
+          ? {
+              ...item,
+              qty: Number(qty)
+            }
+          : item
+      )
+    );
 
-
-  const handleSaveRecipe = async () => {
+  };  const handleSaveRecipe = async () => {
 
 
     try {
@@ -232,6 +242,9 @@ function Recipes() {
 
 
   };
+
+
+
   const handleLoadRecipe = async (recipeId) => {
 
     try {
@@ -313,55 +326,32 @@ function Recipes() {
 
 
 
-
       <Button
-
         variant="contained"
-
         onClick={handleAddItem}
-
-        sx={{
-          margin:1
-        }}
-
+        sx={{ margin:1 }}
       >
         إضافة مكون
       </Button>
 
 
 
-
       <Button
-
         variant="contained"
-
         color="primary"
-
         onClick={() => setLoadOpen(true)}
-
-        sx={{
-          margin:1
-        }}
-
+        sx={{ margin:1 }}
       >
         تحميل وصفة
       </Button>
 
 
 
-
       <Button
-
         variant="contained"
-
         color="success"
-
         onClick={handleSaveRecipe}
-
-        sx={{
-          margin:1
-        }}
-
+        sx={{ margin:1 }}
       >
         حفظ الوصفة
       </Button>
@@ -373,6 +363,8 @@ function Recipes() {
       <RecipeItemsTable
 
         items={items}
+
+        onUpdateQty={handleUpdateItemQty}
 
       />
 
@@ -435,11 +427,7 @@ function Recipes() {
 
             {recipes.map(r => (
 
-              <ListItem
-
-                key={r.id}
-
-              >
+              <ListItem key={r.id}>
 
                 <ListItemButton
 
