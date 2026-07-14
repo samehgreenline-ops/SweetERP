@@ -74,6 +74,7 @@ function RecipeItemDialog({
         </TextField>
 
 
+
         <TextField
           label="الكمية"
           type="number"
@@ -93,7 +94,9 @@ function RecipeItemDialog({
         />
 
 
+
         <TextField
+          select
           label="الوحدة"
           fullWidth
           margin="normal"
@@ -104,7 +107,25 @@ function RecipeItemDialog({
               e.target.value
             )
           }
-        />
+        >
+
+          <MenuItem value="كيلو">
+            كيلو
+          </MenuItem>
+
+          <MenuItem value="جرام">
+            جرام
+          </MenuItem>
+
+          <MenuItem value="لتر">
+            لتر
+          </MenuItem>
+
+          <MenuItem value="مل">
+            مل
+          </MenuItem>
+
+        </TextField>
 
 
       </DialogContent>

@@ -1,8 +1,44 @@
 import {
-  Box,
   Typography,
   Paper,
 } from "@mui/material";
+
+
+function convertQty(qty, fromUnit, toUnit) {
+
+  const amount = Number(qty) || 0;
+
+
+  const units = {
+    "كيلو": 1,
+    "KG": 1,
+
+    "جرام": 0.001,
+    "GRAM": 0.001,
+
+    "جم": 0.001,
+
+    "لتر": 1,
+    "LITER": 1,
+
+    "مل": 0.001,
+
+    "قطعة": 1,
+    "PIECE": 1,
+  };
+
+
+  if (!units[fromUnit] || !units[toUnit]) {
+    return amount;
+  }
+
+
+  return (
+    amount * units[fromUnit]
+  ) / units[toUnit];
+
+}
+
 
 
 function RecipeSummary({
@@ -12,16 +48,34 @@ function RecipeSummary({
 
 
   const totalCost = items.reduce(
-    (sum, item) =>
-      sum + (Number(item.qty) * Number(item.cost)),
+    (sum, item) => {
+
+
+      const qtyInBase = convertQty(
+        item.qty,
+        item.unit,
+        "KG"
+      );
+
+
+      return sum +
+        (
+          Number(qtyInBase) *
+          Number(item.cost || 0)
+        );
+
+
+    },
     0
   );
 
 
+
   const unitCost =
-    outputQty > 0
+    Number(outputQty) > 0
       ? totalCost / Number(outputQty)
       : 0;
+
 
 
   return (
