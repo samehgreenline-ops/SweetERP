@@ -9,34 +9,19 @@ import {
 } from "@mui/material";
 
 
-function convertQty(qty, fromUnit, toUnit) {
+function convertDisplayQty(qty, unit) {
 
-  const units = {
-    "كيلو": 1,
-    "KG": 1,
+  const value = Number(qty) || 0;
 
-    "جرام": 0.001,
-    "GRAM": 0.001,
-
-    "جم": 0.001,
-
-    "لتر": 1,
-    "LITER": 1,
-
-    "قطعة": 1,
-    "PIECE": 1,
-  };
-
-
-  const amount = Number(qty) || 0;
-
-
-  if (!units[fromUnit] || !units[toUnit]) {
-    return amount;
+  if (unit === "مل") {
+    return value / 1000;
   }
 
+  if (unit === "جرام") {
+    return value / 1000;
+  }
 
-  return amount * units[fromUnit] / units[toUnit];
+  return value;
 
 }
 
@@ -49,11 +34,7 @@ function RecipeItemsTable({ items }) {
 
     <TableContainer component={Paper}>
 
-      <Table
-        sx={{
-          direction: "rtl",
-        }}
-      >
+      <Table sx={{ direction:"rtl" }}>
 
         <TableHead>
 
@@ -76,57 +57,44 @@ function RecipeItemsTable({ items }) {
 
         <TableBody>
 
-          {items.map((item) => {
+          {items.map((item)=>(
+
+            <TableRow key={item.id}>
+
+              <TableCell>
+                {item.name}
+              </TableCell>
 
 
-            const qtyInBase = convertQty(
-              item.qty,
-              item.unit,
-              item.baseUnit || "KG"
-            );
+              <TableCell>
+                {item.qty}
+              </TableCell>
 
 
-            const total =
-              qtyInBase * Number(item.cost || 0);
+              <TableCell>
+                {item.unit}
+              </TableCell>
 
 
-
-            return (
-
-              <TableRow
-                key={item.id}
-              >
-
-                <TableCell>
-                  {item.name}
-                </TableCell>
+              <TableCell>
+                {item.cost}
+              </TableCell>
 
 
-                <TableCell>
-                  {item.qty}
-                </TableCell>
+              <TableCell>
+                {
+                  (
+                    convertDisplayQty(item.qty,item.unit)
+                    *
+                    Number(item.cost)
+                  ).toFixed(2)
+                }
+              </TableCell>
 
 
-                <TableCell>
-                  {item.unit}
-                </TableCell>
+            </TableRow>
 
-
-                <TableCell>
-                  {item.cost}
-                </TableCell>
-
-
-                <TableCell>
-                  {total.toFixed(2)}
-                </TableCell>
-
-
-              </TableRow>
-
-            );
-
-          })}
+          ))}
 
 
         </TableBody>
