@@ -80,7 +80,7 @@ function RecipeItemDialog({
           type="number"
           fullWidth
           margin="normal"
-          value={item.qty ?? ""}
+          value={item.qty === 0 ? "" : item.qty}
           inputProps={{
             min: 0,
             step: "0.001",
@@ -88,7 +88,9 @@ function RecipeItemDialog({
           onChange={(e) =>
             handleChange(
               "qty",
-              Number(e.target.value)
+              e.target.value === ""
+                ? ""
+                : Number(e.target.value)
             )
           }
         />
@@ -133,9 +135,7 @@ function RecipeItemDialog({
 
       <DialogActions>
 
-        <Button
-          onClick={onClose}
-        >
+        <Button onClick={onClose}>
           إلغاء
         </Button>
 

@@ -9,6 +9,39 @@ import {
 } from "@mui/material";
 
 
+function convertQty(qty, fromUnit, toUnit) {
+
+  const units = {
+    "كيلو": 1,
+    "KG": 1,
+
+    "جرام": 0.001,
+    "GRAM": 0.001,
+
+    "جم": 0.001,
+
+    "لتر": 1,
+    "LITER": 1,
+
+    "قطعة": 1,
+    "PIECE": 1,
+  };
+
+
+  const amount = Number(qty) || 0;
+
+
+  if (!units[fromUnit] || !units[toUnit]) {
+    return amount;
+  }
+
+
+  return amount * units[fromUnit] / units[toUnit];
+
+}
+
+
+
 function RecipeItemsTable({ items }) {
 
 
@@ -26,30 +59,15 @@ function RecipeItemsTable({ items }) {
 
           <TableRow>
 
-            <TableCell>
-              المادة
-            </TableCell>
+            <TableCell>المادة</TableCell>
 
+            <TableCell>الكمية</TableCell>
 
-            <TableCell>
-              الكمية
-            </TableCell>
+            <TableCell>الوحدة</TableCell>
 
+            <TableCell>تكلفة الوحدة</TableCell>
 
-            <TableCell>
-              الوحدة
-            </TableCell>
-
-
-            <TableCell>
-              تكلفة الوحدة
-            </TableCell>
-
-
-            <TableCell>
-              الإجمالي
-            </TableCell>
-
+            <TableCell>الإجمالي</TableCell>
 
           </TableRow>
 
@@ -58,40 +76,57 @@ function RecipeItemsTable({ items }) {
 
         <TableBody>
 
-          {items.map((item) => (
-
-            <TableRow
-              key={item.id}
-            >
-
-              <TableCell>
-                {item.name}
-              </TableCell>
+          {items.map((item) => {
 
 
-              <TableCell>
-                {item.qty}
-              </TableCell>
+            const qtyInBase = convertQty(
+              item.qty,
+              item.unit,
+              item.baseUnit || "KG"
+            );
 
 
-              <TableCell>
-                {item.unit}
-              </TableCell>
+            const total =
+              qtyInBase * Number(item.cost || 0);
 
 
-              <TableCell>
-                {item.cost}
-              </TableCell>
+
+            return (
+
+              <TableRow
+                key={item.id}
+              >
+
+                <TableCell>
+                  {item.name}
+                </TableCell>
 
 
-              <TableCell>
-                {item.qty * item.cost}
-              </TableCell>
+                <TableCell>
+                  {item.qty}
+                </TableCell>
 
 
-            </TableRow>
+                <TableCell>
+                  {item.unit}
+                </TableCell>
 
-          ))}
+
+                <TableCell>
+                  {item.cost}
+                </TableCell>
+
+
+                <TableCell>
+                  {total.toFixed(2)}
+                </TableCell>
+
+
+              </TableRow>
+
+            );
+
+          })}
 
 
         </TableBody>
