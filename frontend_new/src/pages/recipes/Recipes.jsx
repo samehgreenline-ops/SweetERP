@@ -19,7 +19,7 @@ import RecipeItemDialog from "../../components/recipes/RecipeItemDialog.jsx";
 import RecipeSummary from "../../components/recipes/RecipeSummary.jsx";
 
 import { apiGet } from "../../services/api.js";
-import { addRecipe } from "../../services/recipeService.js";
+import { addRecipe, getRecipe } from "../../services/recipeService.js";
 
 
 function Recipes() {
@@ -219,7 +219,39 @@ function Recipes() {
   };
 
 
+const handleLoadRecipe = async (recipeId) => {
 
+  try {
+
+    const data = await getRecipe(recipeId);
+
+    setRecipe({
+      id: data.id,
+      productId: data.productId,
+      outputQty: data.outputQty,
+      outputUnit: data.outputUnit,
+    });
+
+    setItems(
+      data.items.map((item) => ({
+        id: item.id,
+        materialId: item.materialId,
+        name: item.name,
+        qty: Number(item.qty),
+        unit: item.unit,
+        cost: Number(item.cost || 0),
+      }))
+    );
+
+    setLoadOpen(false);
+
+  } catch (error) {
+
+    alert(error.message);
+
+  }
+
+};
 
 
   return (
@@ -356,7 +388,9 @@ function Recipes() {
               >
 
 
-                <ListItemButton>
+                <ListItemButton
+  onClick={() => handleLoadRecipe(r.id)}
+>
 
 
                   <ListItemText

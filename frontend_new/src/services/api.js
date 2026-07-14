@@ -1,4 +1,4 @@
-const API_BASE = "/api";
+const API_BASE = "http://localhost:3001/api";
 
 async function handleResponse(res) {
   const data = await res.json().catch(() => ({}));
@@ -21,6 +21,7 @@ export async function apiPost(path, body) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
+
   return handleResponse(res);
 }
 
@@ -30,6 +31,7 @@ export async function apiPut(path, body) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
+
   return handleResponse(res);
 }
 
@@ -37,5 +39,6 @@ export async function apiDelete(path) {
   const res = await fetch(`${API_BASE}${path}`, {
     method: "DELETE",
   });
+
   return handleResponse(res);
 }
