@@ -8,6 +8,7 @@ import Recipes from "./pages/recipes/Recipes.jsx";
 import Production from "./pages/production/Production.jsx";
 import Inventory from "./pages/inventory/Inventory.jsx";
 import Purchases from "./pages/purchases/Purchases.jsx";
+import Sales from "./pages/sales/Sales.jsx";
 
 
 function SimplePage({ title }) {
@@ -42,10 +43,7 @@ function App() {
 
           <Route path="/purchases" element={<Purchases />} />
 
-          <Route
-            path="/sales"
-            element={<SimplePage title="المبيعات" />}
-          />
+          <Route path="/sales" element={<Sales />} />
 
           <Route
             path="/reports"
