@@ -7,6 +7,7 @@ import Items from "./pages/items/Items.jsx";
 import Recipes from "./pages/recipes/Recipes.jsx";
 import Production from "./pages/production/Production.jsx";
 import Inventory from "./pages/inventory/Inventory.jsx";
+import Purchases from "./pages/purchases/Purchases.jsx";
 
 
 function SimplePage({ title }) {
@@ -22,6 +23,7 @@ function SimplePage({ title }) {
 function App() {
 
   return (
+
     <BrowserRouter>
 
       <Routes>
@@ -34,24 +36,15 @@ function App() {
 
           <Route path="/recipes" element={<Recipes />} />
 
-          <Route
-            path="/inventory"
-            element={<Inventory />}
-          />
+          <Route path="/inventory" element={<Inventory />} />
 
-          <Route
-            path="/production"
-            element={<Production />}
-          />
+          <Route path="/production" element={<Production />} />
+
+          <Route path="/purchases" element={<Purchases />} />
 
           <Route
             path="/sales"
             element={<SimplePage title="المبيعات" />}
-          />
-
-          <Route
-            path="/purchases"
-            element={<SimplePage title="المشتريات" />}
           />
 
           <Route
@@ -64,8 +57,10 @@ function App() {
       </Routes>
 
     </BrowserRouter>
+
   );
 
 }
+
 
 export default App;
