@@ -5,6 +5,9 @@ import MainLayout from "./layouts/MainLayout.jsx";
 import Dashboard from "./pages/dashboard/Dashboard.jsx";
 import Items from "./pages/items/Items.jsx";
 import Recipes from "./pages/recipes/Recipes.jsx";
+import Production from "./pages/production/Production.jsx";
+import Inventory from "./pages/inventory/Inventory.jsx";
+
 
 function SimplePage({ title }) {
   return (
@@ -14,6 +17,7 @@ function SimplePage({ title }) {
     </div>
   );
 }
+
 
 function App() {
 
@@ -32,12 +36,12 @@ function App() {
 
           <Route
             path="/inventory"
-            element={<SimplePage title="المخزون" />}
+            element={<Inventory />}
           />
 
           <Route
             path="/production"
-            element={<SimplePage title="الإنتاج" />}
+            element={<Production />}
           />
 
           <Route
