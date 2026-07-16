@@ -28,25 +28,39 @@ function Items() {
 
 
   const loadItems = async () => {
+
     try {
+
       setLoading(true);
       setError("");
 
       const data = await getItems();
+
+      console.log("ITEMS FROM API:", data);
+
       setItems(data);
 
+
     } catch (err) {
+
       setError(err.message);
 
+
     } finally {
+
       setLoading(false);
+
     }
+
   };
 
 
   useEffect(() => {
+
     loadItems();
+
   }, []);
+
 
 
   const handleAdd = () => {
@@ -68,7 +82,9 @@ function Items() {
     });
 
     setOpen(true);
+
   };
+
 
 
   const handleEdit = (selectedItem) => {
@@ -85,38 +101,48 @@ function Items() {
     });
 
     setOpen(true);
+
   };
+
 
 
   const handleDelete = async (id) => {
 
     if (!window.confirm("هل أنت متأكد من حذف هذا الصنف؟")) return;
 
+
     try {
 
       await deleteItem(id);
       await loadItems();
+
 
     } catch (err) {
 
       setError(err.message);
 
     }
+
   };
+
 
 
   const handleSave = async () => {
 
     try {
 
+
       const payload = {
+
         ...item,
 
         purchasePrice: Number(item.purchasePrice) || 0,
         salePrice: Number(item.salePrice) || 0,
         stockQty: Number(item.stockQty) || 0,
         reorderLevel: Number(item.reorderLevel) || 0,
+
       };
+
 
 
       if (editMode) {
@@ -130,8 +156,11 @@ function Items() {
       }
 
 
+
       setOpen(false);
+
       await loadItems();
+
 
 
     } catch (err) {
@@ -143,33 +172,46 @@ function Items() {
   };
 
 
+
   if (loading) {
 
     return (
+
       <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
+
         <CircularProgress />
+
       </Box>
+
     );
 
   }
+
 
 
   return (
 
     <Box sx={{ direction: "rtl" }}>
 
+
       {error && (
+
         <Alert
           severity="error"
           sx={{ mb: 2 }}
           onClose={() => setError("")}
         >
+
           {error}
+
         </Alert>
+
       )}
 
 
+
       <ItemToolbar onAdd={handleAdd} />
+
 
 
       <ItemTable
@@ -177,6 +219,7 @@ function Items() {
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
+
 
 
       <ItemDialog

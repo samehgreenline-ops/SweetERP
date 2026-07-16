@@ -1,4 +1,5 @@
 import { Outlet, NavLink } from "react-router-dom";
+
 import {
   Box,
   Typography,
@@ -8,6 +9,7 @@ import {
   ListItemButton,
   ListItemText,
 } from "@mui/material";
+
 import { useLocation } from "react-router-dom";
 
 
@@ -27,6 +29,7 @@ function MainLayout() {
 
   const location = useLocation();
 
+
   return (
 
     <Box
@@ -38,16 +41,21 @@ function MainLayout() {
       }}
     >
 
+
       <Drawer
         variant="permanent"
         anchor="right"
         sx={{
+          width: 240,
+          flexShrink: 0,
+
           "& .MuiDrawer-paper": {
             width: 240,
             boxSizing: "border-box",
           },
         }}
       >
+
 
         <Box
           sx={{
@@ -83,7 +91,6 @@ function MainLayout() {
                   selected={location.pathname === item.path}
                   sx={{
                     textAlign: "right",
-                    color: "inherit",
                   }}
                 >
 
@@ -99,15 +106,20 @@ function MainLayout() {
 
           </List>
 
-
         </Box>
+
 
       </Drawer>
 
 
+
       <Box
+        component="main"
         sx={{
           flexGrow: 1,
+          width: "calc(100% - 240px)",
+          minWidth: 0,
+          overflowX: "hidden",
           padding: 3,
         }}
       >
