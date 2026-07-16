@@ -32,18 +32,51 @@ function RecipeItemsTable({ items, onUpdateQty }) {
 
   return (
 
-    <TableContainer component={Paper}>
+    <TableContainer
+      component={Paper}
+      sx={{
+        width: "100%",
+        overflowX: "auto"
+      }}
+    >
 
-      <Table sx={{ direction:"rtl" }}>
+      <Table
+        sx={{
+          direction: "rtl",
+          minWidth: 800,
+          tableLayout: "auto"
+        }}
+      >
 
         <TableHead>
 
           <TableRow>
-            <TableCell>الصنف</TableCell>
-            <TableCell>الكمية</TableCell>
-            <TableCell>الوحدة</TableCell>
-            <TableCell>تكلفة الوحدة</TableCell>
-            <TableCell>الإجمالي</TableCell>
+
+            <TableCell
+              sx={{
+                minWidth: 200,
+                width: 200
+              }}
+            >
+              المادة
+            </TableCell>
+
+            <TableCell>
+              الكمية
+            </TableCell>
+
+            <TableCell>
+              الوحدة
+            </TableCell>
+
+            <TableCell>
+              تكلفة الوحدة
+            </TableCell>
+
+            <TableCell>
+              الإجمالي
+            </TableCell>
+
           </TableRow>
 
         </TableHead>
@@ -51,35 +84,52 @@ function RecipeItemsTable({ items, onUpdateQty }) {
 
         <TableBody>
 
-          {items.map((item)=>(
+          {items.map((item) => (
 
             <TableRow key={item.id}>
 
-              <TableCell>
-                {item.name}
+
+              <TableCell
+                sx={{
+                  minWidth:200,
+                  width:200,
+                  whiteSpace:"nowrap",
+                  overflow:"visible"
+                }}
+              >
+
+                <div
+                  style={{
+                    color:"#000",
+                    fontSize:"16px",
+                    fontWeight:"bold",
+                    direction:"rtl",
+                    display:"block"
+                  }}
+                >
+                  {item.name}
+                </div>
+
               </TableCell>
+
 
 
               <TableCell>
 
                 <TextField
-
                   type="number"
-
                   size="small"
-
                   value={item.qty}
-
                   onChange={(e)=>
                     onUpdateQty(
                       item.id,
                       e.target.value
                     )
                   }
-
                 />
 
               </TableCell>
+
 
 
               <TableCell>
@@ -87,18 +137,23 @@ function RecipeItemsTable({ items, onUpdateQty }) {
               </TableCell>
 
 
+
               <TableCell>
-                {item.cost}
+                {Number(item.cost || 0).toFixed(2)}
               </TableCell>
+
 
 
               <TableCell>
 
                 {
                   (
-                    convertDisplayQty(item.qty,item.unit)
+                    convertDisplayQty(
+                      item.qty,
+                      item.unit
+                    )
                     *
-                    Number(item.cost)
+                    Number(item.cost || 0)
                   ).toFixed(2)
                 }
 
@@ -112,6 +167,7 @@ function RecipeItemsTable({ items, onUpdateQty }) {
         </TableBody>
 
       </Table>
+
 
     </TableContainer>
 
