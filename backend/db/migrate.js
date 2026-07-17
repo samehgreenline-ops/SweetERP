@@ -146,7 +146,6 @@ const defaultPermissions = [
   ["users.manage", "Manage Users", "users"],
 ];
 
-
 for (const permission of defaultPermissions) {
   const exists = db.prepare(`
     SELECT id
@@ -169,4 +168,26 @@ for (const permission of defaultPermissions) {
       permission[2]
     );
   }
+}
+
+
+// ERP Core - Users Foundation
+if (!tableExists("users")) {
+  db.exec(`
+    CREATE TABLE users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      company_id INTEGER NOT NULL,
+      role_id INTEGER NOT NULL,
+      username TEXT NOT NULL UNIQUE,
+      password_hash TEXT NOT NULL,
+      full_name TEXT NOT NULL,
+      email TEXT,
+      active INTEGER DEFAULT 1,
+      created_at TEXT DEFAULT (datetime('now')),
+      FOREIGN KEY (company_id) REFERENCES companies(id),
+      FOREIGN KEY (role_id) REFERENCES roles(id)
+    );
+  `);
+
+  console.log("Created users table");
 }
