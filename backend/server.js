@@ -9,6 +9,7 @@ import { salesRouter } from "./routes/sales.js";
 import { suppliersRouter } from "./routes/suppliers.js";
 import { customersRouter } from "./routes/customers.js";
 import { reportsRouter } from "./routes/reports.js";
+import { companiesRouter } from "./routes/companies.js";
 
 import "./db/database.js";
 import "./db/migrate.js";
@@ -32,6 +33,7 @@ app.use("/api/sales", salesRouter);
 app.use("/api/suppliers", suppliersRouter);
 app.use("/api/customers", customersRouter);
 app.use("/api/reports", reportsRouter);
+app.use("/api/companies", companiesRouter);
 
 app.use((err, req, res, next) => {
   console.error(err);
