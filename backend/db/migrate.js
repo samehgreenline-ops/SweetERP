@@ -72,7 +72,6 @@ if (!tableExists("roles")) {
 }
 
 
-// Create default roles for existing companies
 const companies = db.prepare(`
   SELECT id FROM companies
 `).all();
@@ -129,7 +128,6 @@ if (!tableExists("permissions")) {
 }
 
 
-// Default system permissions
 const defaultPermissions = [
   ["dashboard.view", "View Dashboard", "dashboard"],
   ["items.view", "View Items", "items"],
@@ -145,6 +143,7 @@ const defaultPermissions = [
   ["reports.view", "View Reports", "reports"],
   ["users.manage", "Manage Users", "users"],
 ];
+
 
 for (const permission of defaultPermissions) {
   const exists = db.prepare(`
@@ -190,4 +189,21 @@ if (!tableExists("users")) {
   `);
 
   console.log("Created users table");
+}
+
+
+// ERP Core - Role Permissions Foundation
+if (!tableExists("role_permissions")) {
+  db.exec(`
+    CREATE TABLE role_permissions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      role_id INTEGER NOT NULL,
+      permission_id INTEGER NOT NULL,
+      created_at TEXT DEFAULT (datetime('now')),
+      FOREIGN KEY (role_id) REFERENCES roles(id),
+      FOREIGN KEY (permission_id) REFERENCES permissions(id)
+    );
+  `);
+
+  console.log("Created role_permissions table");
 }
