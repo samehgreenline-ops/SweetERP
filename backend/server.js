@@ -10,6 +10,8 @@ import { suppliersRouter } from "./routes/suppliers.js";
 import { customersRouter } from "./routes/customers.js";
 import { reportsRouter } from "./routes/reports.js";
 import { companiesRouter } from "./routes/companies.js";
+import { usersRouter } from "./routes/users.js";
+import { rolesRouter } from "./routes/roles.js";
 
 import "./db/database.js";
 import "./db/migrate.js";
@@ -21,7 +23,10 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/api/health", (req, res) => {
-  res.json({ status: "ok", message: "SweetERP Backend يعمل بنجاح" });
+  res.json({
+    status: "ok",
+    message: "SweetERP Backend يعمل بنجاح"
+  });
 });
 
 app.use("/api/items", itemsRouter);
@@ -34,10 +39,14 @@ app.use("/api/suppliers", suppliersRouter);
 app.use("/api/customers", customersRouter);
 app.use("/api/reports", reportsRouter);
 app.use("/api/companies", companiesRouter);
+app.use("/api/users", usersRouter);
+app.use("/api/roles", rolesRouter);
 
 app.use((err, req, res, next) => {
   console.error(err);
-  res.status(500).json({ error: "خطأ في الخادم" });
+  res.status(500).json({
+    error: "خطأ في الخادم"
+  });
 });
 
 app.listen(PORT, () => {
