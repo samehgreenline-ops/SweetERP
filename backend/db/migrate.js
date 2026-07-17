@@ -110,3 +110,63 @@ for (const company of companies) {
     }
   }
 }
+
+
+// ERP Core - Permissions Foundation
+if (!tableExists("permissions")) {
+  db.exec(`
+    CREATE TABLE permissions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      code TEXT NOT NULL UNIQUE,
+      name TEXT NOT NULL,
+      module TEXT NOT NULL,
+      description TEXT,
+      created_at TEXT DEFAULT (datetime('now'))
+    );
+  `);
+
+  console.log("Created permissions table");
+}
+
+
+// Default system permissions
+const defaultPermissions = [
+  ["dashboard.view", "View Dashboard", "dashboard"],
+  ["items.view", "View Items", "items"],
+  ["items.create", "Create Items", "items"],
+  ["items.edit", "Edit Items", "items"],
+  ["inventory.view", "View Inventory", "inventory"],
+  ["production.view", "View Production", "production"],
+  ["production.create", "Create Production", "production"],
+  ["purchases.view", "View Purchases", "purchases"],
+  ["purchases.create", "Create Purchases", "purchases"],
+  ["sales.view", "View Sales", "sales"],
+  ["sales.create", "Create Sales", "sales"],
+  ["reports.view", "View Reports", "reports"],
+  ["users.manage", "Manage Users", "users"],
+];
+
+
+for (const permission of defaultPermissions) {
+  const exists = db.prepare(`
+    SELECT id
+    FROM permissions
+    WHERE code = ?
+  `).get(permission[0]);
+
+  if (!exists) {
+    db.prepare(`
+      INSERT INTO permissions
+      (
+        code,
+        name,
+        module
+      )
+      VALUES (?, ?, ?)
+    `).run(
+      permission[0],
+      permission[1],
+      permission[2]
+    );
+  }
+}
