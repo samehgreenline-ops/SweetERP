@@ -72,6 +72,28 @@ router.post("/", (req, res) => {
 
 
 
+// Get all permissions
+router.get("/all/permissions", (req, res) => {
+
+  const permissions = db.prepare(`
+    SELECT
+      id,
+      code,
+      name,
+      module
+    FROM permissions
+    ORDER BY id
+  `).all();
+
+
+  res.json(permissions);
+
+});
+
+
+
+
+
 // Get role permissions
 router.get("/:id/permissions", (req, res) => {
 
@@ -92,6 +114,7 @@ router.get("/:id/permissions", (req, res) => {
   res.json(permissions);
 
 });
+
 
 
 
@@ -156,6 +179,7 @@ router.post("/:id/permissions", (req, res) => {
   });
 
 });
+
 
 
 

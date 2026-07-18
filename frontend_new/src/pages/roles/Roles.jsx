@@ -21,7 +21,6 @@ function Roles() {
   const [selectedPermissions, setSelectedPermissions] = useState([]);
 
 
-
   useEffect(() => {
 
     fetch("/api/roles")
@@ -30,8 +29,13 @@ function Roles() {
         setRoles(data);
       });
 
-  }, []);
+    fetch("/api/roles/all/permissions")
+      .then((res) => res.json())
+      .then((data) => {
+        setPermissions(data);
+      });
 
+  }, []);
 
 
   function loadRolePermissions(role) {
@@ -42,8 +46,6 @@ function Roles() {
       .then((res) => res.json())
       .then((data) => {
 
-        setPermissions(data);
-
         setSelectedPermissions(
           data.map((item) => item.id)
         );
@@ -53,35 +55,24 @@ function Roles() {
   }
 
 
-
   function togglePermission(id) {
 
     setSelectedPermissions((current) => {
 
       if (current.includes(id)) {
-
-        return current.filter(
-          (item) => item !== id
-        );
-
+        return current.filter((item) => item !== id);
       }
 
-
-      return [
-        ...current,
-        id
-      ];
+      return [...current, id];
 
     });
 
   }
 
 
-
   function savePermissions() {
 
     if (!selectedRole) return;
-
 
     fetch(`/api/roles/${selectedRole.id}/permissions`, {
 
@@ -96,15 +87,14 @@ function Roles() {
       }),
 
     })
-    .then((res) => res.json())
-    .then(() => {
+      .then((res) => res.json())
+      .then(() => {
 
-      alert("Permissions saved");
+        alert("Permissions saved");
 
-    });
+      });
 
   }
-
 
 
   return (
@@ -146,12 +136,8 @@ function Roles() {
               >
 
                 <ListItemButton
-                  selected={
-                    selectedRole?.id === role.id
-                  }
-                  onClick={() =>
-                    loadRolePermissions(role)
-                  }
+                  selected={selectedRole?.id === role.id}
+                  onClick={() => loadRolePermissions(role)}
                 >
 
                   <ListItemText
@@ -167,9 +153,7 @@ function Roles() {
 
           </List>
 
-
         </Paper>
-
 
 
 
@@ -194,7 +178,6 @@ function Roles() {
           )}
 
 
-
           {selectedRole && permissions.map((permission) => (
 
             <Box
@@ -206,17 +189,8 @@ function Roles() {
             >
 
               <Checkbox
-
-                checked={
-                  selectedPermissions.includes(
-                    permission.id
-                  )
-                }
-
-                onChange={() =>
-                  togglePermission(permission.id)
-                }
-
+                checked={selectedPermissions.includes(permission.id)}
+                onChange={() => togglePermission(permission.id)}
               />
 
               <Typography>
@@ -226,7 +200,6 @@ function Roles() {
             </Box>
 
           ))}
-
 
 
           {selectedRole && (
@@ -243,12 +216,9 @@ function Roles() {
 
           )}
 
-
         </Paper>
 
-
       </Box>
-
 
     </Paper>
 

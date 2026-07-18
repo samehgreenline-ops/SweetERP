@@ -16,6 +16,7 @@ import {
   DialogActions,
   TextField,
   MenuItem,
+  Box,
 } from "@mui/material";
 
 
@@ -27,17 +28,21 @@ function Users() {
 
   const [roles, setRoles] = useState([]);
 
+
   const [open, setOpen] = useState(false);
 
 
   const [form, setForm] = useState({
+
     company_id: "",
     role_id: "",
     username: "",
     password_hash: "",
     full_name: "",
     email: "",
+
   });
+
 
 
   function loadUsers() {
@@ -49,6 +54,7 @@ function Users() {
       });
 
   }
+
 
 
   useEffect(() => {
@@ -74,51 +80,70 @@ function Users() {
 
 
 
+
+
   function handleChange(e) {
 
     setForm({
+
       ...form,
+
       [e.target.name]: e.target.value,
+
     });
 
   }
 
 
 
+
+
   function saveUser() {
+
 
     fetch("/api/users", {
 
       method: "POST",
 
       headers: {
+
         "Content-Type": "application/json",
+
       },
 
       body: JSON.stringify(form),
 
     })
 
-      .then((res) => res.json())
+    .then((res) => res.json())
 
-      .then(() => {
+    .then(() => {
 
-        setOpen(false);
 
-        setForm({
-          company_id: "",
-          role_id: "",
-          username: "",
-          password_hash: "",
-          full_name: "",
-          email: "",
-        });
+      setOpen(false);
 
-        loadUsers();
+
+      setForm({
+
+        company_id: "",
+        role_id: "",
+        username: "",
+        password_hash: "",
+        full_name: "",
+        email: "",
 
       });
 
+
+      loadUsers();
+
+
+    });
+
+
   }
+
+
 
 
 
@@ -127,24 +152,52 @@ function Users() {
     <Paper sx={{ p: 3 }}>
 
 
-      <Typography variant="h5" sx={{ mb: 2 }}>
-        Users
-      </Typography>
+      <Box
 
+        sx={{
 
-      <Button
-        variant="contained"
-        sx={{ mb: 2 }}
-        onClick={() => setOpen(true)}
+          display: "flex",
+
+          justifyContent: "space-between",
+
+          alignItems: "center",
+
+          mb: 3,
+
+        }}
+
       >
-        Add User
-      </Button>
+
+        <Typography variant="h5">
+
+          Users
+
+        </Typography>
+
+
+        <Button
+
+          variant="contained"
+
+          onClick={() => setOpen(true)}
+
+        >
+
+          Add User
+
+        </Button>
+
+
+      </Box>
+
+
 
 
 
       <TableContainer>
 
         <Table>
+
 
           <TableHead>
 
@@ -170,48 +223,84 @@ function Users() {
 
 
 
+
+
           <TableBody>
+
 
             {users.map((user) => (
 
+
               <TableRow key={user.id}>
 
-                <TableCell>{user.id}</TableCell>
 
-                <TableCell>{user.username}</TableCell>
+                <TableCell>
+                  {user.id}
+                </TableCell>
 
-                <TableCell>{user.full_name}</TableCell>
 
-                <TableCell>{user.company_name}</TableCell>
+                <TableCell>
+                  {user.username}
+                </TableCell>
 
-                <TableCell>{user.role_name}</TableCell>
 
-                <TableCell>{user.email}</TableCell>
+                <TableCell>
+                  {user.full_name}
+                </TableCell>
+
+
+                <TableCell>
+                  {user.company_name}
+                </TableCell>
+
+
+                <TableCell>
+                  {user.role_name}
+                </TableCell>
+
+
+                <TableCell>
+                  {user.email}
+                </TableCell>
+
 
                 <TableCell>
                   {user.active ? "Active" : "Inactive"}
                 </TableCell>
 
+
               </TableRow>
+
 
             ))}
 
+
           </TableBody>
 
+
         </Table>
+
 
       </TableContainer>
 
 
 
+
+
       <Dialog
+
         open={open}
+
         onClose={() => setOpen(false)}
+
         fullWidth
+
+        maxWidth="sm"
+
       >
 
         <DialogTitle>
-          Add New User
+          Add User
         </DialogTitle>
 
 
@@ -219,92 +308,155 @@ function Users() {
 
 
           <TextField
+
+            fullWidth
+
+            margin="normal"
+
             label="Username"
+
             name="username"
-            fullWidth
-            margin="normal"
+
             value={form.username}
+
             onChange={handleChange}
+
           />
 
 
+
           <TextField
-            label="Full Name"
-            name="full_name"
+
             fullWidth
+
             margin="normal"
-            value={form.full_name}
-            onChange={handleChange}
-          />
 
-
-          <TextField
             label="Password"
-            name="password_hash"
+
             type="password"
-            fullWidth
-            margin="normal"
+
+            name="password_hash"
+
             value={form.password_hash}
+
             onChange={handleChange}
+
           />
 
 
+
           <TextField
+
+            fullWidth
+
+            margin="normal"
+
+            label="Full Name"
+
+            name="full_name"
+
+            value={form.full_name}
+
+            onChange={handleChange}
+
+          />
+
+
+
+          <TextField
+
+            fullWidth
+
+            margin="normal"
+
             label="Email"
+
             name="email"
-            fullWidth
-            margin="normal"
+
             value={form.email}
+
             onChange={handleChange}
+
           />
 
 
 
           <TextField
+
             select
-            label="Company"
-            name="company_id"
+
             fullWidth
+
             margin="normal"
+
+            label="Company"
+
+            name="company_id"
+
             value={form.company_id}
+
             onChange={handleChange}
+
           >
 
             {companies.map((company) => (
 
               <MenuItem
+
                 key={company.id}
+
                 value={company.id}
+
               >
+
                 {company.name}
+
               </MenuItem>
 
             ))}
+
 
           </TextField>
 
 
 
+
+
           <TextField
+
             select
-            label="Role"
-            name="role_id"
+
             fullWidth
+
             margin="normal"
+
+            label="Role"
+
+            name="role_id"
+
             value={form.role_id}
+
             onChange={handleChange}
+
           >
+
 
             {roles.map((role) => (
 
               <MenuItem
+
                 key={role.id}
+
                 value={role.id}
+
               >
+
                 {role.name}
+
               </MenuItem>
 
             ))}
+
 
           </TextField>
 
@@ -313,23 +465,40 @@ function Users() {
 
 
 
+
         <DialogActions>
 
-          <Button onClick={() => setOpen(false)}>
-            Cancel
-          </Button>
 
           <Button
-            variant="contained"
-            onClick={saveUser}
+
+            onClick={() => setOpen(false)}
+
           >
-            Save
+
+            Cancel
+
           </Button>
+
+
+
+          <Button
+
+            variant="contained"
+
+            onClick={saveUser}
+
+          >
+
+            Save
+
+          </Button>
+
 
         </DialogActions>
 
 
       </Dialog>
+
 
 
     </Paper>
