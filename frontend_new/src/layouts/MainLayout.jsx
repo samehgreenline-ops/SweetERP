@@ -1,4 +1,4 @@
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet, NavLink, useLocation } from "react-router-dom";
 
 import {
   Box,
@@ -10,8 +10,6 @@ import {
   ListItemText,
 } from "@mui/material";
 
-import { useLocation } from "react-router-dom";
-
 
 const menuItems = [
   { text: "الرئيسية", path: "/" },
@@ -22,6 +20,7 @@ const menuItems = [
   { text: "المبيعات", path: "/sales" },
   { text: "المشتريات", path: "/purchases" },
   { text: "التقارير", path: "/reports" },
+  { text: "المستخدمون", path: "/users" },
 ];
 
 
@@ -41,7 +40,6 @@ function MainLayout() {
       }}
     >
 
-
       <Drawer
         variant="permanent"
         anchor="right"
@@ -55,7 +53,6 @@ function MainLayout() {
           },
         }}
       >
-
 
         <Box
           sx={{
@@ -108,9 +105,7 @@ function MainLayout() {
 
         </Box>
 
-
       </Drawer>
-
 
 
       <Box

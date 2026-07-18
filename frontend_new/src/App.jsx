@@ -10,16 +10,7 @@ import Inventory from "./pages/inventory/Inventory.jsx";
 import Purchases from "./pages/purchases/Purchases.jsx";
 import Sales from "./pages/sales/Sales.jsx";
 import Reports from "./pages/reports/Reports.jsx";
-
-
-function SimplePage({ title }) {
-  return (
-    <div>
-      <h2>{title}</h2>
-      <p>القسم جاهز وسيتم تطويره لاحقاً</p>
-    </div>
-  );
-}
+import Users from "./pages/users/Users.jsx";
 
 
 function App() {
@@ -47,6 +38,8 @@ function App() {
           <Route path="/sales" element={<Sales />} />
 
           <Route path="/reports" element={<Reports />} />
+
+          <Route path="/users" element={<Users />} />
 
         </Route>
 
