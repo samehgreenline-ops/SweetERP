@@ -11,6 +11,7 @@ import Purchases from "./pages/purchases/Purchases.jsx";
 import Sales from "./pages/sales/Sales.jsx";
 import Reports from "./pages/reports/Reports.jsx";
 import Users from "./pages/users/Users.jsx";
+import Roles from "./pages/roles/Roles.jsx";
 
 
 function App() {
@@ -40,6 +41,8 @@ function App() {
           <Route path="/reports" element={<Reports />} />
 
           <Route path="/users" element={<Users />} />
+
+          <Route path="/roles" element={<Roles />} />
 
         </Route>
 

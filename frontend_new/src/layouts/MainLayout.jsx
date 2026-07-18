@@ -21,6 +21,7 @@ const menuItems = [
   { text: "المشتريات", path: "/purchases" },
   { text: "التقارير", path: "/reports" },
   { text: "المستخدمون", path: "/users" },
+  { text: "الأدوار والصلاحيات", path: "/roles" },
 ];
 
 
@@ -40,6 +41,7 @@ function MainLayout() {
       }}
     >
 
+
       <Drawer
         variant="permanent"
         anchor="right"
@@ -53,6 +55,7 @@ function MainLayout() {
           },
         }}
       >
+
 
         <Box
           sx={{
@@ -103,9 +106,12 @@ function MainLayout() {
 
           </List>
 
+
         </Box>
 
+
       </Drawer>
+
 
 
       <Box
