@@ -15,11 +15,14 @@ function tableExists(table) {
   return !!result;
 }
 
+
+// Items updates
 if (!columnExists("items", "reorder_level")) {
   db.exec(`
     ALTER TABLE items
     ADD COLUMN reorder_level REAL DEFAULT 0;
   `);
+
   console.log("Added reorder_level to items");
 }
 
@@ -28,11 +31,12 @@ if (!columnExists("items", "notes")) {
     ALTER TABLE items
     ADD COLUMN notes TEXT;
   `);
+
   console.log("Added notes to items");
 }
 
 
-// ERP Core - Companies Foundation
+// Companies
 if (!tableExists("companies")) {
   db.exec(`
     CREATE TABLE companies (
@@ -54,7 +58,7 @@ if (!tableExists("companies")) {
 }
 
 
-// ERP Core - Roles Foundation
+// Roles
 if (!tableExists("roles")) {
   db.exec(`
     CREATE TABLE roles (
@@ -76,6 +80,7 @@ const companies = db.prepare(`
   SELECT id FROM companies
 `).all();
 
+
 const defaultRoles = [
   "Owner",
   "Financial Manager",
@@ -85,16 +90,24 @@ const defaultRoles = [
   "Production Manager",
 ];
 
+
 for (const company of companies) {
+
   for (const roleName of defaultRoles) {
+
     const exists = db.prepare(`
       SELECT id
       FROM roles
       WHERE company_id = ?
       AND name = ?
-    `).get(company.id, roleName);
+    `).get(
+      company.id,
+      roleName
+    );
+
 
     if (!exists) {
+
       db.prepare(`
         INSERT INTO roles
         (
@@ -106,13 +119,15 @@ for (const company of companies) {
         company.id,
         roleName
       );
+
     }
   }
 }
 
 
-// ERP Core - Permissions Foundation
+// Permissions
 if (!tableExists("permissions")) {
+
   db.exec(`
     CREATE TABLE permissions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -143,16 +158,17 @@ const defaultPermissions = [
   ["reports.view", "View Reports", "reports"],
   ["users.manage", "Manage Users", "users"],
 ];
-
-
 for (const permission of defaultPermissions) {
+
   const exists = db.prepare(`
     SELECT id
     FROM permissions
     WHERE code = ?
   `).get(permission[0]);
 
+
   if (!exists) {
+
     db.prepare(`
       INSERT INTO permissions
       (
@@ -166,12 +182,14 @@ for (const permission of defaultPermissions) {
       permission[1],
       permission[2]
     );
+
   }
 }
 
 
-// ERP Core - Users Foundation
+// Users
 if (!tableExists("users")) {
+
   db.exec(`
     CREATE TABLE users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -189,21 +207,75 @@ if (!tableExists("users")) {
   `);
 
   console.log("Created users table");
+
 }
 
 
-// ERP Core - Role Permissions Foundation
+// Role Permissions
 if (!tableExists("role_permissions")) {
+
   db.exec(`
     CREATE TABLE role_permissions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       role_id INTEGER NOT NULL,
       permission_id INTEGER NOT NULL,
       created_at TEXT DEFAULT (datetime('now')),
+      UNIQUE(role_id, permission_id),
       FOREIGN KEY (role_id) REFERENCES roles(id),
       FOREIGN KEY (permission_id) REFERENCES permissions(id)
     );
   `);
 
   console.log("Created role_permissions table");
+
+}
+
+
+// Give Owner role all permissions
+const ownerRoles = db.prepare(`
+  SELECT id
+  FROM roles
+  WHERE name = 'Owner'
+`).all();
+
+
+const allPermissions = db.prepare(`
+  SELECT id
+  FROM permissions
+`).all();
+
+
+for (const role of ownerRoles) {
+
+  for (const permission of allPermissions) {
+
+    const exists = db.prepare(`
+      SELECT id
+      FROM role_permissions
+      WHERE role_id = ?
+      AND permission_id = ?
+    `).get(
+      role.id,
+      permission.id
+    );
+
+
+    if (!exists) {
+
+      db.prepare(`
+        INSERT INTO role_permissions
+        (
+          role_id,
+          permission_id
+        )
+        VALUES (?, ?)
+      `).run(
+        role.id,
+        permission.id
+      );
+
+    }
+
+  }
+
 }
