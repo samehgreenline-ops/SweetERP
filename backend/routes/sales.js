@@ -2,6 +2,7 @@ import { Router } from "express";
 import db from "../db/database.js";
 import { convertQty } from "../utils/units.js";
 import { updateStock } from "./items.js";
+import { createSaleJournal } from "../utils/accounting.js";
 
 const router = Router();
 
@@ -9,7 +10,7 @@ const router = Router();
 function getSale(id) {
 
   const sale = db.prepare(`
-    SELECT 
+    SELECT
       s.*,
       c.name AS customer_name
     FROM sales s
@@ -23,7 +24,7 @@ function getSale(id) {
 
 
   const items = db.prepare(`
-    SELECT 
+    SELECT
       si.*,
       i.name AS item_name
     FROM sale_items si
@@ -53,6 +54,7 @@ router.get("/", (req,res)=>{
   );
 
 });
+
 
 
 
@@ -130,10 +132,6 @@ router.post("/", (req,res)=>{
 
 
     });
-
-
-
-
     const result = db.prepare(`
       INSERT INTO sales
       (
@@ -256,6 +254,24 @@ router.post("/", (req,res)=>{
 
 
 
+    createSaleJournal({
+
+      companyId: 1,
+
+      saleId,
+
+      amount: totalAmount,
+
+      date:
+        saleDate ||
+        new Date()
+        .toISOString()
+        .slice(0,10),
+
+    });
+
+
+
     return saleId;
 
 
@@ -290,10 +306,6 @@ router.post("/", (req,res)=>{
 
 
 });
-
-
-
-
 function formatSale(sale,items){
 
 
