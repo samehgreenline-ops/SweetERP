@@ -14,6 +14,7 @@ import { companiesRouter } from "./routes/companies.js";
 import { usersRouter } from "./routes/users.js";
 import { rolesRouter } from "./routes/roles.js";
 import { authRouter } from "./routes/auth.js";
+import { accountingRouter } from "./routes/accounting.js";
 
 import "./db/database.js";
 import "./db/migrate.js";
@@ -29,20 +30,23 @@ app.use(cors());
 app.use(express.json());
 
 
-
+// Health Check
 app.get("/api/health", (req, res) => {
 
   res.json({
 
     status: "ok",
 
-    message: "SweetERP Backend يعمل بنجاح"
+    message: "SweetERP Backend يعمل بنجاح",
+
+    version: "1.0"
 
   });
 
 });
 
 
+// Main Modules
 
 app.use("/api/items", itemsRouter);
 
@@ -62,6 +66,9 @@ app.use("/api/customers", customersRouter);
 
 app.use("/api/reports", reportsRouter);
 
+
+// System Modules
+
 app.use("/api/companies", companiesRouter);
 
 app.use("/api/users", usersRouter);
@@ -71,21 +78,29 @@ app.use("/api/roles", rolesRouter);
 app.use("/api/auth", authRouter);
 
 
+// Accounting Module
 
+app.use("/api/accounting", accountingRouter);
+
+
+// Error Handler
 
 app.use((err, req, res, next) => {
 
-  console.error(err);
+  console.error("SERVER ERROR:", err);
 
   res.status(500).json({
 
-    error: "خطأ في الخادم"
+    error: "خطأ في الخادم",
+
+    message: err.message
 
   });
 
 });
 
 
+// Start
 
 app.listen(PORT, () => {
 
