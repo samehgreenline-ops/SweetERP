@@ -3,6 +3,7 @@
 ## 1. Vision
 
 SweetERP is a customizable ERP platform.
+
 The first implementation model is a sweets manufacturing and sales business because it contains complex operational cycles:
 - Raw materials
 - Recipes
@@ -49,46 +50,49 @@ Repository:
 ✅ Protected routes  
 
 ## Master Data
-✅ Items
-✅ Raw materials
-✅ Finished products
-✅ Units
-✅ Customers
-✅ Suppliers
+✅ Items  
+✅ Raw materials  
+✅ Finished products  
+✅ Units  
+✅ Customers  
+✅ Suppliers  
 
 ## Manufacturing
-✅ Recipes
-✅ Recipe items
-✅ Unit conversions
-✅ Production orders
-✅ Raw material consumption
-✅ Finished goods increase
+✅ Recipes  
+✅ Recipe items  
+✅ Unit conversions  
+✅ Production orders  
+✅ Raw material consumption  
+✅ Finished goods increase  
 
 ## Inventory
-✅ Stock movements
-✅ Purchases impact inventory
-✅ Production impact inventory
-✅ Sales impact inventory
+✅ Stock movements  
+✅ Purchases impact inventory  
+✅ Production impact inventory  
+✅ Sales impact inventory  
 
 ## Sales
-✅ Sales module
-✅ Customer selection
-✅ Product selection
-✅ Sale price handling
+✅ Sales module  
+✅ Customer selection  
+✅ Product selection  
+✅ Sale price handling  
 
 ## Purchases
-✅ Purchase module
-✅ Supplier handling
+✅ Purchase module  
+✅ Supplier handling  
 
 ---
 
 # 4. Current Development Phase
 
 Phase:
+
 Integration + Accounting + Reports + UI Improvements
 
 Priority:
+
 Do not rebuild completed modules.
+
 Improve, test and connect existing modules.
 
 ---
@@ -98,29 +102,33 @@ Improve, test and connect existing modules.
 ## A) Complete Operational Cycle
 
 Purchase:
-Supplier
-→ Purchase Invoice
-→ Stock Increase
-→ Cost Update
+
+Supplier  
+→ Purchase Invoice  
+→ Stock Increase  
+→ Cost Update  
 
 Production:
-Recipe
-→ Production Order
-→ Raw Material Consumption
-→ Finished Product
-→ Cost Update
+
+Recipe  
+→ Production Order  
+→ Raw Material Consumption  
+→ Finished Product  
+→ Cost Update  
 
 Sales:
-Customer
-→ Sales Invoice
-→ Stock Reduction
-→ Revenue Recording
+
+Customer  
+→ Sales Invoice  
+→ Stock Reduction  
+→ Revenue Recording  
 
 ---
 
 ## B) Accounting System
 
 Required:
+
 - Chart of Accounts
 - Journal Entries
 - Automatic accounting transactions
@@ -133,6 +141,7 @@ Required:
 ## C) Cost Management
 
 Required:
+
 - Recipe cost
 - Production cost
 - Product cost
@@ -144,6 +153,7 @@ Required:
 ## D) Reports
 
 Required:
+
 - Inventory reports
 - Sales reports
 - Purchase reports
@@ -157,6 +167,7 @@ Required:
 ## E) Documents
 
 Required:
+
 - Purchase invoices
 - Sales invoices
 - Production documents
@@ -168,6 +179,7 @@ Required:
 ## F) UI Improvements
 
 Required:
+
 - Dashboard
 - Better tables
 - Search
@@ -178,7 +190,8 @@ Required:
 
 # 6. Work Rules
 
-1. Never modify stable modules without reason.
+1. Never modify stable modules without a clear reason.
+
 2. Before large changes:
    - git status
    - git diff --stat
@@ -189,6 +202,15 @@ Required:
 
 5. Complete business logic before cosmetic improvements.
 
+6. After completing any important development step:
+   - Update PROJECT_MASTER_PLAN.md.
+   - Update Session Handover.
+   - Commit and push together.
+
+7. Do not apply partial fixes when a complete file replacement is safer and clearer.
+
+8. Every major development decision must preserve the project vision and future customization ability.
+
 ---
 
 # 7. Current Goal
@@ -196,31 +218,44 @@ Required:
 Deliver ERP Version 1:
 
 A complete working cycle:
-Purchase
-→ Inventory
-→ Production
-→ Cost
-→ Sale
-→ Accounting
-→ Reports
+
+Purchase  
+→ Inventory  
+→ Production  
+→ Cost  
+→ Sale  
+→ Accounting  
+→ Reports  
+
 ---
 
 # Session Handover
 
 ## Last completed:
+
 - Created PROJECT_MASTER_PLAN.md as the main project reference.
+- Added SESSION_START.md as the conversation startup reference.
 - Confirmed current SweetERP status and development phase.
-- Saved project state before continuing development.
+- Established Git workflow for code and project status tracking.
+- Defined rule that every important completed step updates the project plan before commit and push.
 
 ## Current task:
-- Establish project management workflow.
-- Keep all future sessions synchronized through the master plan.
+
+- Maintain project synchronization through the master plan.
+- Continue completing ERP Version 1 modules without rebuilding completed parts.
 
 ## Next step:
-- Review and update the master plan when completing each development phase.
-- Continue ERP completion starting with operational testing, accounting, costs and reports.
+
+- Complete operational testing.
+- Finalize accounting foundation.
+- Implement cost calculations.
+- Build reports.
+- Complete documents and UI improvements.
 
 ## Important notes:
+
 - frontend_new is the approved frontend.
 - Do not rebuild completed modules.
 - Any major change must be checked with git status and git diff --stat before commit.
+- Always update PROJECT_MASTER_PLAN.md before saving important milestones.
+- Always update Session Handover at the end of each major work session.
