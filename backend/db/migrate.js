@@ -279,3 +279,137 @@ for (const role of ownerRoles) {
   }
 
 }
+// ================================
+// Accounting Foundation
+// ================================
+
+
+// Accounts
+if (!tableExists("accounts")) {
+
+  db.exec(`
+    CREATE TABLE accounts (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      company_id INTEGER NOT NULL,
+      code TEXT NOT NULL,
+      name TEXT NOT NULL,
+      account_type TEXT NOT NULL,
+      parent_id INTEGER,
+      active INTEGER DEFAULT 1,
+      created_at TEXT DEFAULT (datetime('now')),
+      UNIQUE(company_id, code),
+      FOREIGN KEY (company_id) REFERENCES companies(id),
+      FOREIGN KEY (parent_id) REFERENCES accounts(id)
+    );
+  `);
+
+  console.log("Created accounts table");
+
+}
+
+
+// Journal Entries
+if (!tableExists("journal_entries")) {
+
+  db.exec(`
+    CREATE TABLE journal_entries (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      company_id INTEGER NOT NULL,
+      entry_date TEXT NOT NULL,
+      reference_type TEXT,
+      reference_id INTEGER,
+      description TEXT,
+      created_at TEXT DEFAULT (datetime('now')),
+      FOREIGN KEY (company_id) REFERENCES companies(id)
+    );
+  `);
+
+  console.log("Created journal_entries table");
+
+}
+
+
+// Journal Lines
+if (!tableExists("journal_lines")) {
+
+  db.exec(`
+    CREATE TABLE journal_lines (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      journal_entry_id INTEGER NOT NULL,
+      account_id INTEGER NOT NULL,
+      debit REAL DEFAULT 0,
+      credit REAL DEFAULT 0,
+      created_at TEXT DEFAULT (datetime('now')),
+      FOREIGN KEY (journal_entry_id) REFERENCES journal_entries(id)
+        ON DELETE CASCADE,
+      FOREIGN KEY (account_id) REFERENCES accounts(id)
+    );
+  `);
+
+  console.log("Created journal_lines table");
+
+}
+
+
+// Default Chart Of Accounts
+const defaultAccounts = [
+  ["1000", "الصندوق", "ASSET"],
+  ["1100", "البنك", "ASSET"],
+  ["1200", "العملاء", "ASSET"],
+  ["1300", "مخزون خامات", "ASSET"],
+  ["1400", "مخزون منتجات تامة", "ASSET"],
+
+  ["2000", "الموردون", "LIABILITY"],
+
+  ["3000", "رأس المال", "EQUITY"],
+
+  ["4000", "المبيعات", "REVENUE"],
+
+  ["5000", "تكلفة المبيعات", "EXPENSE"],
+  ["5100", "المصروفات العامة", "EXPENSE"],
+];
+
+
+const companiesForAccounts = db.prepare(`
+  SELECT id FROM companies
+`).all();
+
+
+for (const company of companiesForAccounts) {
+
+  for (const account of defaultAccounts) {
+
+    const exists = db.prepare(`
+      SELECT id
+      FROM accounts
+      WHERE company_id = ?
+      AND code = ?
+    `).get(
+      company.id,
+      account[0]
+    );
+
+
+    if (!exists) {
+
+      db.prepare(`
+        INSERT INTO accounts
+        (
+          company_id,
+          code,
+          name,
+          account_type
+        )
+        VALUES (?, ?, ?, ?)
+      `).run(
+        company.id,
+        account[0],
+        account[1],
+        account[2]
+      );
+
+    }
+
+  }
+
+}
