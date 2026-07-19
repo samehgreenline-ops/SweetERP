@@ -2,6 +2,7 @@ import { Router } from "express";
 import db from "../db/database.js";
 import { convertQty } from "../utils/units.js";
 import { updateStock } from "./items.js";
+import { createPurchaseJournal } from "../utils/accounting.js";
 
 const router = Router();
 
@@ -244,6 +245,23 @@ router.post("/", (req, res) => {
 
 
     }
+
+
+
+    // إنشاء القيد المحاسبي بعد نجاح عملية الشراء
+    createPurchaseJournal({
+
+      companyId: 1,
+
+      purchaseId,
+
+      amount: totalAmount,
+
+      date:
+        purchaseDate ||
+        new Date().toISOString().slice(0,10)
+
+    });
 
 
 
