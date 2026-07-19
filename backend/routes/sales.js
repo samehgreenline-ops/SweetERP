@@ -2,9 +2,14 @@ import { Router } from "express";
 import db from "../db/database.js";
 import { convertQty } from "../utils/units.js";
 import { updateStock } from "./items.js";
-import { createSaleJournal } from "../utils/accounting.js";
+import {
+  createSaleJournal,
+  createSaleCostJournal
+} from "../utils/accounting.js";
+
 
 const router = Router();
+
 
 
 function getSale(id) {
@@ -20,7 +25,9 @@ function getSale(id) {
   `).get(id);
 
 
+
   if (!sale) return null;
+
 
 
   const items = db.prepare(`
@@ -34,9 +41,12 @@ function getSale(id) {
   `).all(id);
 
 
+
   return formatSale(sale, items);
 
 }
+
+
 
 
 
@@ -49,11 +59,13 @@ router.get("/", (req,res)=>{
   `).all();
 
 
+
   res.json(
     sales.map(s => getSale(s.id))
   );
 
 });
+
 
 
 
@@ -72,14 +84,19 @@ router.post("/", (req,res)=>{
 
 
 
+
+
   const transaction = db.transaction(()=>{
+
 
 
     let totalAmount = 0;
 
 
 
+
     const preparedItems = (items || []).map((line)=>{
+
 
 
       const item = db.prepare(`
@@ -87,6 +104,7 @@ router.post("/", (req,res)=>{
         FROM items
         WHERE id = ?
       `).get(line.itemId);
+
 
 
 
@@ -100,8 +118,10 @@ router.post("/", (req,res)=>{
 
 
 
+
       let unitPrice =
         Number(line.unitPrice);
+
 
 
 
@@ -114,12 +134,15 @@ router.post("/", (req,res)=>{
 
 
 
+
       const totalPrice =
         Number(line.qty) * unitPrice;
 
 
 
+
       totalAmount += totalPrice;
+
 
 
 
@@ -131,7 +154,13 @@ router.post("/", (req,res)=>{
       };
 
 
+
     });
+
+
+
+
+
     const result = db.prepare(`
       INSERT INTO sales
       (
@@ -144,6 +173,8 @@ router.post("/", (req,res)=>{
       VALUES (?, ?, ?, ?, ?)
     `).run(
 
+
+
       customerId || null,
 
       invoiceNumber || "",
@@ -153,7 +184,9 @@ router.post("/", (req,res)=>{
         .toISOString()
         .slice(0,10),
 
+
       totalAmount,
+
 
       notes || ""
 
@@ -161,8 +194,11 @@ router.post("/", (req,res)=>{
 
 
 
+
+
     const saleId =
       result.lastInsertRowid;
+
 
 
 
@@ -182,11 +218,14 @@ router.post("/", (req,res)=>{
 
 
 
+
+
     const updateSalePrice = db.prepare(`
       UPDATE items
       SET sale_price = ?
       WHERE id = ?
     `);
+
 
 
 
@@ -213,6 +252,7 @@ router.post("/", (req,res)=>{
 
 
 
+
       updateSalePrice.run(
 
         line.unitPrice,
@@ -224,12 +264,15 @@ router.post("/", (req,res)=>{
 
 
 
+
       const qtyInBase =
         convertQty(
           line.qty,
           line.unit,
           line.item.base_unit
         );
+
+
 
 
 
@@ -250,9 +293,8 @@ router.post("/", (req,res)=>{
       );
 
 
+
     }
-
-
 
     createSaleJournal({
 
@@ -272,7 +314,26 @@ router.post("/", (req,res)=>{
 
 
 
+    createSaleCostJournal({
+
+      companyId: 1,
+
+      saleId,
+
+      items: preparedItems,
+
+      date:
+        saleDate ||
+        new Date()
+        .toISOString()
+        .slice(0,10),
+
+    });
+
+
+
     return saleId;
+
 
 
   });
@@ -280,11 +341,15 @@ router.post("/", (req,res)=>{
 
 
 
-  try{
+
+  try {
+
 
 
     const saleId =
       transaction();
+
+
 
 
     res.status(201).json(
@@ -292,7 +357,9 @@ router.post("/", (req,res)=>{
     );
 
 
+
   }catch(error){
+
 
 
     res.status(400).json({
@@ -302,72 +369,121 @@ router.post("/", (req,res)=>{
     });
 
 
+
   }
 
 
+
 });
+
+
+
+
+
+
+
 function formatSale(sale,items){
+
 
 
   return {
 
+
+
     id:sale.id,
+
+
 
     customerId:sale.customer_id,
 
+
+
     customerName:
       sale.customer_name || "",
+
+
 
 
     invoiceNumber:
       sale.invoice_number,
 
 
+
+
     saleDate:
       sale.sale_date,
+
+
 
 
     totalAmount:
       sale.total_amount,
 
 
+
+
     status:
       sale.status,
+
+
 
 
     notes:
       sale.notes,
 
 
+
+
     createdAt:
       sale.created_at,
+
+
 
 
     items:items.map(item=>({
 
 
+
       id:item.id,
+
+
 
       itemId:item.item_id,
 
+
+
       itemName:item.item_name,
+
+
 
       qty:item.qty,
 
+
+
       unit:item.unit,
+
+
 
       unitPrice:item.unit_price,
 
+
+
       totalPrice:item.total_price
+
 
 
     }))
 
 
+
   };
 
 
+
 }
+
+
+
 
 
 

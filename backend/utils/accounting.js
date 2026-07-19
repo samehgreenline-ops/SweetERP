@@ -70,7 +70,7 @@ function createJournalEntry({
 
 
 
-
+// الحصول على رقم الحساب
 function getAccountId(companyId, code) {
 
   const account = db.prepare(`
@@ -78,18 +78,11 @@ function getAccountId(companyId, code) {
     FROM accounts
     WHERE company_id = ?
     AND code = ?
-  `).get(
-    companyId,
-    code
-  );
+  `).get(companyId, code);
 
 
   if (!account) {
-
-    throw new Error(
-      `Account ${code} not found`
-    );
-
+    throw new Error(`Account ${code} not found`);
   }
 
 
@@ -99,8 +92,66 @@ function getAccountId(companyId, code) {
 
 
 
+// حساب تكلفة المنتج
+function calculateProductCost(productId) {
 
-// قيد شراء خامات
+  const recipe = db.prepare(`
+    SELECT *
+    FROM recipes
+    WHERE product_id = ?
+    ORDER BY id DESC
+    LIMIT 1
+  `).get(productId);
+
+
+
+  if (!recipe) {
+
+    const item = db.prepare(`
+      SELECT purchase_price
+      FROM items
+      WHERE id = ?
+    `).get(productId);
+
+
+    return Number(item?.purchase_price) || 0;
+
+  }
+
+
+
+  const materials = db.prepare(`
+    SELECT
+      ri.qty,
+      i.purchase_price
+    FROM recipe_items ri
+    JOIN items i
+      ON i.id = ri.material_id
+    WHERE ri.recipe_id = ?
+  `).all(recipe.id);
+
+
+
+  let total = 0;
+
+
+  for (const material of materials) {
+
+    total +=
+      Number(material.qty) *
+      Number(material.purchase_price || 0);
+
+  }
+
+
+
+  return total / (Number(recipe.output_qty) || 1);
+
+}
+
+
+
+// قيد شراء
 function createPurchaseJournal({
   companyId = 1,
   purchaseId,
@@ -108,41 +159,31 @@ function createPurchaseJournal({
   date,
 }) {
 
-
-  const inventoryAccount =
-    getAccountId(companyId,"1300");
-
-
-  const supplierAccount =
-    getAccountId(companyId,"2000");
-
-
-
   return createJournalEntry({
 
     companyId,
-
     date,
 
-    referenceType:"PURCHASE",
-
-    referenceId:purchaseId,
+    referenceType: "PURCHASE",
+    referenceId: purchaseId,
 
     description:
       `Purchase Invoice #${purchaseId}`,
 
-    lines:[
+    lines: [
 
       {
-        accountId:inventoryAccount,
-        debit:amount,
-        credit:0
+        accountId:
+          getAccountId(companyId,"1300"),
+        debit: amount,
+        credit: 0
       },
 
       {
-        accountId:supplierAccount,
-        debit:0,
-        credit:amount
+        accountId:
+          getAccountId(companyId,"2000"),
+        debit: 0,
+        credit: amount
       }
 
     ]
@@ -153,8 +194,7 @@ function createPurchaseJournal({
 
 
 
-
-// قيد بيع الإيراد
+// قيد بيع
 function createSaleJournal({
   companyId = 1,
   saleId,
@@ -162,39 +202,29 @@ function createSaleJournal({
   date,
 }) {
 
-
-  const customerAccount =
-    getAccountId(companyId,"1200");
-
-
-  const salesAccount =
-    getAccountId(companyId,"4000");
-
-
-
   return createJournalEntry({
 
     companyId,
-
     date,
 
-    referenceType:"SALE",
-
-    referenceId:saleId,
+    referenceType: "SALE",
+    referenceId: saleId,
 
     description:
       `Sales Invoice #${saleId}`,
 
-    lines:[
+    lines: [
 
       {
-        accountId:customerAccount,
-        debit:amount,
+        accountId:
+          getAccountId(companyId,"1200"),
+        debit: amount,
         credit:0
       },
 
       {
-        accountId:salesAccount,
+        accountId:
+          getAccountId(companyId,"4000"),
         debit:0,
         credit:amount
       }
@@ -207,51 +237,59 @@ function createSaleJournal({
 
 
 
-
-
 // قيد تكلفة المبيعات
-function createCOGSJournal({
+function createSaleCostJournal({
   companyId = 1,
   saleId,
-  costAmount,
+  items,
   date,
 }) {
 
 
-  const costAccount =
-    getAccountId(companyId,"5000");
+  let totalCost = 0;
 
 
-  const inventoryAccount =
-    getAccountId(companyId,"1400");
+  for (const item of items) {
+
+    totalCost +=
+      Number(item.qty) *
+      calculateProductCost(item.itemId);
+
+  }
+
+
+
+  if (totalCost <= 0) {
+    return null;
+  }
 
 
 
   return createJournalEntry({
 
     companyId,
-
     date,
 
     referenceType:"SALE_COGS",
-
     referenceId:saleId,
 
     description:
-      `Cost of Sales Invoice #${saleId}`,
+      `COGS For Sales Invoice #${saleId}`,
 
     lines:[
 
       {
-        accountId:costAccount,
-        debit:costAmount,
+        accountId:
+          getAccountId(companyId,"5000"),
+        debit:totalCost,
         credit:0
       },
 
       {
-        accountId:inventoryAccount,
+        accountId:
+          getAccountId(companyId,"1400"),
         debit:0,
-        credit:costAmount
+        credit:totalCost
       }
 
     ]
@@ -259,8 +297,6 @@ function createCOGSJournal({
   });
 
 }
-
-
 
 
 
@@ -269,5 +305,6 @@ export {
   getAccountId,
   createPurchaseJournal,
   createSaleJournal,
-  createCOGSJournal
+  calculateProductCost,
+  createSaleCostJournal
 };
