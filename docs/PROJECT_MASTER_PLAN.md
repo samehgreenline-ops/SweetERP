@@ -203,4 +203,24 @@ Purchase
 → Sale
 → Accounting
 → Reports
-س
+---
+
+# Session Handover
+
+## Last completed:
+- Created PROJECT_MASTER_PLAN.md as the main project reference.
+- Confirmed current SweetERP status and development phase.
+- Saved project state before continuing development.
+
+## Current task:
+- Establish project management workflow.
+- Keep all future sessions synchronized through the master plan.
+
+## Next step:
+- Review and update the master plan when completing each development phase.
+- Continue ERP completion starting with operational testing, accounting, costs and reports.
+
+## Important notes:
+- frontend_new is the approved frontend.
+- Do not rebuild completed modules.
+- Any major change must be checked with git status and git diff --stat before commit.
