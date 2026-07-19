@@ -62,12 +62,14 @@ function Sales() {
 
       setCustomers(await getCustomers());
 
+
       setItems(
         (await getItems())
           .filter(
             item => item.itemType === "FINISHED_PRODUCT"
           )
       );
+
 
       setSales(await getSales());
 
@@ -90,12 +92,34 @@ function Sales() {
 
 
 
+  const handleSelectItem = (value) => {
+
+    setSelectedItem(value);
+
+    const item = items.find(
+      x => x.id === Number(value)
+    );
+
+
+    if (item) {
+
+      setUnitPrice(
+        item.salePrice || ""
+      );
+
+    }
+
+  };
+
+
+
   const addLine = () => {
 
 
     const item = items.find(
       x => x.id === Number(selectedItem)
     );
+
 
 
     if(!item){
@@ -107,16 +131,31 @@ function Sales() {
     }
 
 
+
     setLines([
+
       ...lines,
+
       {
+
         itemId:item.id,
+
         itemName:item.name,
+
         qty:Number(qty),
+
         unit:item.baseUnit,
-        unitPrice:Number(unitPrice),
+
+
+        unitPrice:
+          Number(unitPrice) > 0
+            ? Number(unitPrice)
+            : Number(item.salePrice) || 0,
+
       }
+
     ]);
+
 
 
     setSelectedItem("");
@@ -148,6 +187,7 @@ function Sales() {
       });
 
 
+
       setLines([]);
 
       setInvoiceNumber("");
@@ -155,6 +195,7 @@ function Sales() {
       setNotes("");
 
       await loadData();
+
 
 
       alert("تم حفظ فاتورة البيع");
@@ -166,11 +207,7 @@ function Sales() {
 
     }
 
-  };
-
-
-
-  return (
+  };  return (
 
     <Box sx={{direction:"rtl"}}>
 
@@ -178,14 +215,21 @@ function Sales() {
       {error && (
 
         <Alert
+
           severity="error"
+
           onClose={()=>setError("")}
+
           sx={{mb:2}}
+
         >
+
           {error}
+
         </Alert>
 
       )}
+
 
 
 
@@ -194,6 +238,7 @@ function Sales() {
         المبيعات
 
       </Typography>
+
 
 
 
@@ -225,6 +270,7 @@ function Sales() {
 
 
 
+
       <TextField
 
         label="رقم الفاتورة"
@@ -238,7 +284,10 @@ function Sales() {
       />
 
 
+
       <br />
+
+
 
 
       <TextField
@@ -249,11 +298,12 @@ function Sales() {
 
         value={selectedItem}
 
-        onChange={(e)=>setSelectedItem(e.target.value)}
+        onChange={(e)=>handleSelectItem(e.target.value)}
 
         sx={{m:1,width:250}}
 
       >
+
 
         {items.map(i=>(
 
@@ -267,6 +317,7 @@ function Sales() {
 
 
       </TextField>
+
 
 
 
@@ -286,6 +337,7 @@ function Sales() {
 
 
 
+
       <TextField
 
         label="سعر البيع"
@@ -302,6 +354,7 @@ function Sales() {
 
 
 
+
       <Button
 
         variant="contained"
@@ -315,6 +368,8 @@ function Sales() {
         إضافة
 
       </Button>
+
+
 
 
 
@@ -338,6 +393,7 @@ function Sales() {
             </TableRow>
 
           </TableHead>
+
 
 
           <TableBody>
@@ -368,6 +424,7 @@ function Sales() {
 
 
 
+
       <Button
 
         variant="contained"
@@ -382,20 +439,20 @@ function Sales() {
 
         حفظ الفاتورة
 
-      </Button>
-
-
-
-      <Typography variant="h6" sx={{mt:4}}>
+      </Button>      <Typography variant="h6" sx={{mt:4}}>
 
         فواتير البيع السابقة
 
       </Typography>
 
 
+
+
+
       <TableContainer component={Paper}>
 
         <Table>
+
 
           <TableHead>
 
@@ -412,21 +469,27 @@ function Sales() {
           </TableHead>
 
 
+
           <TableBody>
 
             {sales.map(s=>(
 
               <TableRow key={s.id}>
 
+
                 <TableCell>{s.id}</TableCell>
+
 
                 <TableCell>{s.customerName}</TableCell>
 
+
                 <TableCell>{s.totalAmount}</TableCell>
+
 
               </TableRow>
 
             ))}
+
 
           </TableBody>
 
@@ -436,11 +499,13 @@ function Sales() {
       </TableContainer>
 
 
+
     </Box>
 
   );
 
 }
+
 
 
 export default Sales;

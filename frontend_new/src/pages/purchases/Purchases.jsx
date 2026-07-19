@@ -85,6 +85,33 @@ function Purchases() {
 
 
 
+
+
+  const handleItemChange = (value) => {
+
+
+    setSelectedItem(value);
+
+
+    const item = items.find(
+      x => x.id === Number(value)
+    );
+
+
+    if(item){
+
+      setUnitPrice(
+        item.purchasePrice || ""
+      );
+
+    }
+
+
+  };
+
+
+
+
   const addLine = () => {
 
 
@@ -124,6 +151,8 @@ function Purchases() {
 
 
 
+
+
   const savePurchase = async () => {
 
 
@@ -141,6 +170,7 @@ function Purchases() {
         items:lines,
 
       });
+
 
 
       setLines([]);
@@ -162,6 +192,8 @@ function Purchases() {
     }
 
   };
+
+
 
 
 
@@ -189,6 +221,8 @@ function Purchases() {
         المشتريات
 
       </Typography>
+
+
 
 
 
@@ -220,6 +254,8 @@ function Purchases() {
 
 
 
+
+
       <TextField
 
         label="رقم الفاتورة"
@@ -234,7 +270,12 @@ function Purchases() {
 
 
 
+
+
       <br />
+
+
+
 
 
       <TextField
@@ -245,7 +286,7 @@ function Purchases() {
 
         value={selectedItem}
 
-        onChange={(e)=>setSelectedItem(e.target.value)}
+        onChange={(e)=>handleItemChange(e.target.value)}
 
         sx={{m:1,width:250}}
 
@@ -266,6 +307,8 @@ function Purchases() {
 
 
 
+
+
       <TextField
 
         label="الكمية"
@@ -279,6 +322,8 @@ function Purchases() {
         sx={{m:1,width:120}}
 
       />
+
+
 
 
 
@@ -298,6 +343,8 @@ function Purchases() {
 
 
 
+
+
       <Button
 
         variant="contained"
@@ -311,6 +358,8 @@ function Purchases() {
         إضافة
 
       </Button>
+
+
 
 
 
@@ -364,6 +413,8 @@ function Purchases() {
 
 
 
+
+
       <Button
 
         variant="contained"
@@ -382,11 +433,16 @@ function Purchases() {
 
 
 
+
+
       <Typography variant="h6" sx={{mt:4}}>
 
         الفواتير السابقة
 
       </Typography>
+
+
+
 
 
       <TableContainer component={Paper}>

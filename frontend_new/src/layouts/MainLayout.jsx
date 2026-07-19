@@ -53,8 +53,20 @@ const menuItems = [
   },
 
   {
+    text: "العملاء",
+    path: "/customers",
+    permission: "sales.view",
+  },
+
+  {
     text: "المشتريات",
     path: "/purchases",
+    permission: "purchases.view",
+  },
+
+  {
+    text: "الموردون",
+    path: "/suppliers",
     permission: "purchases.view",
   },
 
@@ -299,7 +311,6 @@ function MainLayout() {
 
 
     </Box>
-
 
   );
 

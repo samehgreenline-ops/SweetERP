@@ -16,6 +16,9 @@ import Reports from "./pages/reports/Reports.jsx";
 import Users from "./pages/users/Users.jsx";
 import Roles from "./pages/roles/Roles.jsx";
 
+import Suppliers from "./pages/suppliers/Suppliers.jsx";
+import Customers from "./pages/customers/Customers.jsx";
+
 import Login from "./pages/login/Login.jsx";
 
 
@@ -176,6 +179,25 @@ function App() {
 
           <Route
 
+            path="/suppliers"
+
+            element={
+
+              <ProtectedRoute permission="purchases.view">
+
+                <Suppliers />
+
+              </ProtectedRoute>
+
+            }
+
+          />
+
+
+
+
+          <Route
+
             path="/sales"
 
             element={
@@ -183,6 +205,25 @@ function App() {
               <ProtectedRoute permission="sales.view">
 
                 <Sales />
+
+              </ProtectedRoute>
+
+            }
+
+          />
+
+
+
+
+          <Route
+
+            path="/customers"
+
+            element={
+
+              <ProtectedRoute permission="sales.view">
+
+                <Customers />
 
               </ProtectedRoute>
 
