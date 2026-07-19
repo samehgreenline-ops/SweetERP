@@ -413,3 +413,17 @@ for (const company of companiesForAccounts) {
   }
 
 }
+// ================================
+// Sales Payment Method
+// ================================
+
+if (tableExists("sales") && !columnExists("sales", "payment_method")) {
+
+  db.exec(`
+    ALTER TABLE sales
+    ADD COLUMN payment_method TEXT DEFAULT 'CASH';
+  `);
+
+  console.log("Added payment_method to sales");
+
+}
