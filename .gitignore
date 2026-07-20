@@ -22,3 +22,7 @@ frontend_new/src/package.json
 **/*.db-wal
 
 backend/db/*backup*.db
+
+backend/db/*.db
+backend/db/*.db-shm
+backend/db/*.db-wal
