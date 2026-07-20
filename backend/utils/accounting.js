@@ -1,4 +1,5 @@
 import db from "../db/database.js";
+import { convertQty } from "./units.js";
 
 
 // إنشاء قيد يومية عام
@@ -123,7 +124,9 @@ function calculateProductCost(productId) {
   const materials = db.prepare(`
     SELECT
       ri.qty,
-      i.purchase_price
+      ri.unit,
+      i.purchase_price,
+      i.base_unit
     FROM recipe_items ri
     JOIN items i
       ON i.id = ri.material_id
@@ -135,10 +138,18 @@ function calculateProductCost(productId) {
   let total = 0;
 
 
+
   for (const material of materials) {
 
+    const qtyInBase = convertQty(
+      Number(material.qty),
+      material.unit,
+      material.base_unit
+    );
+
+
     total +=
-      Number(material.qty) *
+      Number(qtyInBase) *
       Number(material.purchase_price || 0);
 
   }
@@ -247,6 +258,7 @@ function createSaleCostJournal({
 
 
   let totalCost = 0;
+
 
 
   for (const item of items) {
