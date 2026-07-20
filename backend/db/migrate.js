@@ -442,3 +442,136 @@ if (tableExists("sales") && !columnExists("sales", "payment_method")) {
   console.log("Added payment_method to sales");
 
 }
+// ================================
+// System Settings
+// ================================
+
+if (!tableExists("system_settings")) {
+
+  db.exec(`
+    CREATE TABLE system_settings (
+
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+      setting_key TEXT NOT NULL UNIQUE,
+
+      value TEXT,
+
+      data_type TEXT DEFAULT 'TEXT',
+
+      description TEXT,
+
+      created_at TEXT DEFAULT (datetime('now'))
+
+    );
+  `);
+
+
+  console.log("Created system_settings table");
+
+}
+
+
+
+// Default System Settings
+
+const defaultSettings = [
+
+  [
+    "default_currency",
+    "EGP",
+    "TEXT",
+    "Default Currency"
+  ],
+
+  [
+    "fiscal_year_start",
+    "01-01",
+    "TEXT",
+    "Fiscal Year Start"
+  ],
+
+  [
+    "cost_method",
+    "AVERAGE",
+    "TEXT",
+    "Inventory Cost Method"
+  ],
+
+  [
+    "tax_rate",
+    "0",
+    "NUMBER",
+    "Default Tax Rate"
+  ],
+
+  [
+    "decimal_places",
+    "2",
+    "NUMBER",
+    "Decimal Places"
+  ],
+
+  [
+    "system_language",
+    "ar",
+    "TEXT",
+    "System Language"
+  ]
+
+];
+
+
+
+for (const setting of defaultSettings) {
+
+
+  const exists = db.prepare(`
+
+    SELECT id
+
+    FROM system_settings
+
+    WHERE setting_key = ?
+
+  `).get(setting[0]);
+
+
+
+  if (!exists) {
+
+
+    db.prepare(`
+
+      INSERT INTO system_settings
+
+      (
+
+        setting_key,
+
+        value,
+
+        data_type,
+
+        description
+
+      )
+
+      VALUES (?, ?, ?, ?)
+
+    `).run(
+
+      setting[0],
+
+      setting[1],
+
+      setting[2],
+
+      setting[3]
+
+    );
+
+
+  }
+
+}

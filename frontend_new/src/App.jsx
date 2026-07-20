@@ -21,6 +21,10 @@ import FinancialReports from "./pages/reports/FinancialReports.jsx";
 import Users from "./pages/users/Users.jsx";
 import Roles from "./pages/roles/Roles.jsx";
 
+import CompanySettings from "./pages/settings/CompanySettings.jsx";
+import SystemSettings from "./pages/settings/SystemSettings.jsx";
+
+
 import Suppliers from "./pages/suppliers/Suppliers.jsx";
 import Customers from "./pages/customers/Customers.jsx";
 
@@ -75,202 +79,91 @@ function App() {
 
 
 
-          <Route
+          <Route path="/" element={
+            <ProtectedRoute permission="dashboard.view">
+              <Dashboard />
+            </ProtectedRoute>
+          } />
 
-            path="/"
 
-            element={
 
-              <ProtectedRoute permission="dashboard.view">
+          <Route path="/items" element={
+            <ProtectedRoute permission="items.view">
+              <Items />
+            </ProtectedRoute>
+          } />
 
-                <Dashboard />
 
-              </ProtectedRoute>
 
-            }
+          <Route path="/recipes" element={
+            <ProtectedRoute permission="items.view">
+              <Recipes />
+            </ProtectedRoute>
+          } />
 
-          />
 
 
+          <Route path="/inventory" element={
+            <ProtectedRoute permission="inventory.view">
+              <Inventory />
+            </ProtectedRoute>
+          } />
 
-          <Route
 
-            path="/items"
 
-            element={
+          <Route path="/production" element={
+            <ProtectedRoute permission="production.view">
+              <Production />
+            </ProtectedRoute>
+          } />
 
-              <ProtectedRoute permission="items.view">
 
-                <Items />
 
-              </ProtectedRoute>
+          <Route path="/purchases" element={
+            <ProtectedRoute permission="purchases.view">
+              <Purchases />
+            </ProtectedRoute>
+          } />
 
-            }
 
-          />
 
+          <Route path="/suppliers" element={
+            <ProtectedRoute permission="purchases.view">
+              <Suppliers />
+            </ProtectedRoute>
+          } />
 
 
-          <Route
 
-            path="/recipes"
+          <Route path="/sales" element={
+            <ProtectedRoute permission="sales.view">
+              <Sales />
+            </ProtectedRoute>
+          } />
 
-            element={
 
-              <ProtectedRoute permission="items.view">
 
-                <Recipes />
+          <Route path="/customers" element={
+            <ProtectedRoute permission="sales.view">
+              <Customers />
+            </ProtectedRoute>
+          } />
 
-              </ProtectedRoute>
 
-            }
 
-          />
+          <Route path="/reports" element={
+            <ProtectedRoute permission="reports.view">
+              <Reports />
+            </ProtectedRoute>
+          } />
 
 
 
-          <Route
-
-            path="/inventory"
-
-            element={
-
-              <ProtectedRoute permission="inventory.view">
-
-                <Inventory />
-
-              </ProtectedRoute>
-
-            }
-
-          />
-
-
-
-          <Route
-
-            path="/production"
-
-            element={
-
-              <ProtectedRoute permission="production.view">
-
-                <Production />
-
-              </ProtectedRoute>
-
-            }
-
-          />
-
-
-
-          <Route
-
-            path="/purchases"
-
-            element={
-
-              <ProtectedRoute permission="purchases.view">
-
-                <Purchases />
-
-              </ProtectedRoute>
-
-            }
-
-          />
-
-
-
-          <Route
-
-            path="/suppliers"
-
-            element={
-
-              <ProtectedRoute permission="purchases.view">
-
-                <Suppliers />
-
-              </ProtectedRoute>
-
-            }
-
-          />
-
-
-
-          <Route
-
-            path="/sales"
-
-            element={
-
-              <ProtectedRoute permission="sales.view">
-
-                <Sales />
-
-              </ProtectedRoute>
-
-            }
-
-          />
-
-
-
-          <Route
-
-            path="/customers"
-
-            element={
-
-              <ProtectedRoute permission="sales.view">
-
-                <Customers />
-
-              </ProtectedRoute>
-
-            }
-
-          />
-
-
-
-          <Route
-
-            path="/reports"
-
-            element={
-
-              <ProtectedRoute permission="reports.view">
-
-                <Reports />
-
-              </ProtectedRoute>
-
-            }
-
-          />
-
-
-
-          <Route
-
-            path="/financial-reports"
-
-            element={
-
-              <ProtectedRoute permission="reports.view">
-
-                <FinancialReports />
-
-              </ProtectedRoute>
-
-            }
-
-          />
-
+          <Route path="/financial-reports" element={
+            <ProtectedRoute permission="reports.view">
+              <FinancialReports />
+            </ProtectedRoute>
+          } />
 
 
 
@@ -279,149 +172,84 @@ function App() {
 
 
 
-          <Route
+          <Route path="/accounting/accounts" element={
+            <ProtectedRoute permission="accounts.view">
+              <Accounts />
+            </ProtectedRoute>
+          } />
 
-            path="/accounting/accounts"
 
-            element={
 
-              <ProtectedRoute permission="accounts.view">
+          <Route path="/accounting/journal" element={
+            <ProtectedRoute permission="journal.view">
+              <Journal />
+            </ProtectedRoute>
+          } />
 
-                <Accounts />
 
-              </ProtectedRoute>
 
-            }
+          <Route path="/accounting/ledger" element={
+            <ProtectedRoute permission="ledger.view">
+              <Ledger />
+            </ProtectedRoute>
+          } />
 
-          />
 
 
+          <Route path="/accounting/trial-balance" element={
+            <ProtectedRoute permission="reports.view">
+              <TrialBalance />
+            </ProtectedRoute>
+          } />
 
-          <Route
 
-            path="/accounting/journal"
 
-            element={
+          <Route path="/accounting/income" element={
+            <ProtectedRoute permission="reports.view">
+              <IncomeStatement />
+            </ProtectedRoute>
+          } />
 
-              <ProtectedRoute permission="journal.view">
 
-                <Journal />
 
-              </ProtectedRoute>
+          <Route path="/accounting/balance-sheet" element={
+            <ProtectedRoute permission="reports.view">
+              <BalanceSheet />
+            </ProtectedRoute>
+          } />
 
-            }
 
-          />
 
 
+          <Route path="/users" element={
+            <ProtectedRoute permission="users.manage">
+              <Users />
+            </ProtectedRoute>
+          } />
 
-          <Route
 
-            path="/accounting/ledger"
 
-            element={
+          <Route path="/roles" element={
+            <ProtectedRoute permission="users.manage">
+              <Roles />
+            </ProtectedRoute>
+          } />
 
-              <ProtectedRoute permission="ledger.view">
 
-                <Ledger />
 
-              </ProtectedRoute>
+          <Route path="/company-settings" element={
+            <ProtectedRoute permission="users.manage">
+              <CompanySettings />
+            </ProtectedRoute>
+          } />
 
-            }
 
-          />
 
-
-
-          <Route
-
-            path="/accounting/trial-balance"
-
-            element={
-
-              <ProtectedRoute permission="reports.view">
-
-                <TrialBalance />
-
-              </ProtectedRoute>
-
-            }
-
-          />
-
-
-
-          <Route
-
-            path="/accounting/income"
-
-            element={
-
-              <ProtectedRoute permission="reports.view">
-
-                <IncomeStatement />
-
-              </ProtectedRoute>
-
-            }
-
-          />
-
-
-
-          <Route
-
-            path="/accounting/balance-sheet"
-
-            element={
-
-              <ProtectedRoute permission="reports.view">
-
-                <BalanceSheet />
-
-              </ProtectedRoute>
-
-            }
-
-          />
-
-
-
-
-
-          <Route
-
-            path="/users"
-
-            element={
-
-              <ProtectedRoute permission="users.manage">
-
-                <Users />
-
-              </ProtectedRoute>
-
-            }
-
-          />
-
-
-
-          <Route
-
-            path="/roles"
-
-            element={
-
-              <ProtectedRoute permission="users.manage">
-
-                <Roles />
-
-              </ProtectedRoute>
-
-            }
-
-          />
+          <Route path="/system-settings" element={
+            <ProtectedRoute permission="users.manage">
+              <SystemSettings />
+            </ProtectedRoute>
+          } />
 
 
 
@@ -430,7 +258,6 @@ function App() {
 
 
       </Routes>
-
 
     </BrowserRouter>
 

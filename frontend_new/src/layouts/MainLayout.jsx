@@ -214,6 +214,11 @@ const menuGroups = [
         path: "/company-settings",
         permission: "users.manage",
       },
+      {
+        text: "إعدادات النظام",
+        path: "/system-settings",
+        permission: "users.manage",
+      },
     ],
   },
 
@@ -234,6 +239,7 @@ function MainLayout() {
   const [openGroups, setOpenGroups] = useState({});
 
 
+
   function toggleGroup(text) {
 
     setOpenGroups({
@@ -251,7 +257,9 @@ function MainLayout() {
   function renderLink(item) {
 
     if (!hasPermission(item.permission)) {
+
       return null;
+
     }
 
 
@@ -273,8 +281,8 @@ function MainLayout() {
           }
 
           sx={{
-            pr: 5,
-            textAlign: "right",
+            pr:5,
+            textAlign:"right",
           }}
 
         >
@@ -299,13 +307,13 @@ function MainLayout() {
 
       sx={{
 
-        minHeight: "100vh",
+        minHeight:"100vh",
 
-        direction: "rtl",
+        direction:"rtl",
 
-        display: "flex",
+        display:"flex",
 
-        backgroundColor: "#f5f5f5",
+        backgroundColor:"#f5f5f5",
 
       }}
 
@@ -323,7 +331,6 @@ function MainLayout() {
           width:240,
 
           flexShrink:0,
-
 
           "& .MuiDrawer-paper":{
 
@@ -360,7 +367,6 @@ function MainLayout() {
             SweetERP
 
           </Typography>
-
 
 
           {user && (
@@ -407,8 +413,11 @@ function MainLayout() {
                 &&
                 visibleChildren.length===0
               ){
+
                 return null;
+
               }
+
 
 
               return (
@@ -423,6 +432,7 @@ function MainLayout() {
                   >
 
                     {group.icon}
+
 
                     <ListItemText
 
@@ -471,6 +481,7 @@ function MainLayout() {
 
               );
 
+
             }
 
 
@@ -487,6 +498,7 @@ function MainLayout() {
 
 
       </Drawer>
+
 
 
 

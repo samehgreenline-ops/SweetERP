@@ -15,6 +15,7 @@ import { companiesRouter } from "./routes/companies.js";
 import { usersRouter } from "./routes/users.js";
 import { rolesRouter } from "./routes/roles.js";
 import { authRouter } from "./routes/auth.js";
+import { settingsRouter } from "./routes/settings.js";
 
 import { accountingRouter } from "./routes/accounting.js";
 import { accountingReportsRouter } from "./routes/accounting_reports.js";
@@ -88,6 +89,8 @@ app.use("/api/users", usersRouter);
 app.use("/api/roles", rolesRouter);
 
 app.use("/api/auth", authRouter);
+
+app.use("/api/settings", settingsRouter);
 
 
 
