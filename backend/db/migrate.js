@@ -145,18 +145,33 @@ if (!tableExists("permissions")) {
 
 const defaultPermissions = [
   ["dashboard.view", "View Dashboard", "dashboard"],
+
   ["items.view", "View Items", "items"],
   ["items.create", "Create Items", "items"],
   ["items.edit", "Edit Items", "items"],
+
   ["inventory.view", "View Inventory", "inventory"],
+
   ["production.view", "View Production", "production"],
   ["production.create", "Create Production", "production"],
+
   ["purchases.view", "View Purchases", "purchases"],
   ["purchases.create", "Create Purchases", "purchases"],
+
   ["sales.view", "View Sales", "sales"],
   ["sales.create", "Create Sales", "sales"],
+
   ["reports.view", "View Reports", "reports"],
+
   ["users.manage", "Manage Users", "users"],
+
+  // Accounting
+  ["accounts.view", "View Accounts", "accounting"],
+  ["journal.view", "View Journal Entries", "accounting"],
+  ["ledger.view", "View General Ledger", "accounting"],
+  ["trial_balance.view", "View Trial Balance", "accounting"],
+  ["income_statement.view", "View Income Statement", "accounting"],
+  ["balance_sheet.view", "View Balance Sheet", "accounting"],
 ];
 for (const permission of defaultPermissions) {
 

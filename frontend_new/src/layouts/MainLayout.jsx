@@ -1,4 +1,5 @@
 import { Outlet, NavLink, useLocation } from "react-router-dom";
+import { useState } from "react";
 
 import {
   Box,
@@ -8,84 +9,212 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  Collapse,
 } from "@mui/material";
+
+import {
+  ExpandLess,
+  ExpandMore,
+  Dashboard,
+  Inventory,
+  Factory,
+  ShoppingCart,
+  Receipt,
+  AccountBalance,
+  Assessment,
+  Settings,
+} from "@mui/icons-material";
 
 import { useAuth } from "../context/AuthContext.jsx";
 
 
-
-const menuItems = [
+const menuGroups = [
 
   {
-    text: "الرئيسية",
+    text: "لوحة التحكم",
+    icon: <Dashboard />,
     path: "/",
     permission: "dashboard.view",
   },
 
-  {
-    text: "الأصناف",
-    path: "/items",
-    permission: "items.view",
-  },
 
   {
     text: "المخزون",
-    path: "/inventory",
+    icon: <Inventory />,
     permission: "inventory.view",
+
+    children: [
+      {
+        text: "الأصناف",
+        path: "/items",
+        permission: "items.view",
+      },
+      {
+        text: "حركة المخزون",
+        path: "/inventory",
+        permission: "inventory.view",
+      },
+      {
+        text: "تقييم المخزون",
+        path: "/inventory-value",
+        permission: "inventory.view",
+      },
+    ],
   },
 
-  {
-    text: "الوصفات",
-    path: "/recipes",
-    permission: "items.view",
-  },
 
   {
     text: "الإنتاج",
-    path: "/production",
+    icon: <Factory />,
     permission: "production.view",
+
+    children: [
+      {
+        text: "الوصفات",
+        path: "/recipes",
+        permission: "items.view",
+      },
+      {
+        text: "أوامر الإنتاج",
+        path: "/production",
+        permission: "production.view",
+      },
+      {
+        text: "تكلفة الإنتاج",
+        path: "/production-cost",
+        permission: "production.view",
+      },
+    ],
   },
+
 
   {
     text: "المبيعات",
-    path: "/sales",
+    icon: <ShoppingCart />,
     permission: "sales.view",
+
+    children: [
+      {
+        text: "فواتير البيع",
+        path: "/sales",
+        permission: "sales.view",
+      },
+      {
+        text: "العملاء",
+        path: "/customers",
+        permission: "sales.view",
+      },
+      {
+        text: "تقارير المبيعات",
+        path: "/sales-reports",
+        permission: "reports.view",
+      },
+    ],
   },
 
-  {
-    text: "العملاء",
-    path: "/customers",
-    permission: "sales.view",
-  },
 
   {
     text: "المشتريات",
-    path: "/purchases",
+    icon: <Receipt />,
     permission: "purchases.view",
+
+    children: [
+      {
+        text: "فواتير الشراء",
+        path: "/purchases",
+        permission: "purchases.view",
+      },
+      {
+        text: "الموردون",
+        path: "/suppliers",
+        permission: "purchases.view",
+      },
+      {
+        text: "تقارير المشتريات",
+        path: "/purchase-reports",
+        permission: "reports.view",
+      },
+    ],
   },
 
+
   {
-    text: "الموردون",
-    path: "/suppliers",
-    permission: "purchases.view",
+    text: "الحسابات",
+    icon: <AccountBalance />,
+    permission: "accounts.view",
+
+    children: [
+      {
+        text: "دليل الحسابات",
+        path: "/accounting/accounts",
+        permission: "accounts.view",
+      },
+      {
+        text: "القيود اليومية",
+        path: "/accounting/journal",
+        permission: "journal.view",
+      },
+      {
+        text: "دفتر الأستاذ",
+        path: "/accounting/ledger",
+        permission: "ledger.view",
+      },
+      {
+        text: "ميزان المراجعة",
+        path: "/accounting/trial-balance",
+        permission: "reports.view",
+      },
+      {
+        text: "قائمة الدخل",
+        path: "/accounting/income",
+        permission: "reports.view",
+      },
+      {
+        text: "المركز المالي",
+        path: "/accounting/balance-sheet",
+        permission: "reports.view",
+      },
+    ],
   },
+
 
   {
     text: "التقارير",
-    path: "/reports",
+    icon: <Assessment />,
     permission: "reports.view",
+
+    children: [
+      {
+        text: "التقارير المالية",
+        path: "/reports",
+        permission: "reports.view",
+      },
+    ],
   },
 
-  {
-    text: "المستخدمون",
-    path: "/users",
-    permission: "users.manage",
-  },
 
   {
-    text: "الأدوار والصلاحيات",
-    path: "/roles",
+    text: "الإدارة",
+    icon: <Settings />,
     permission: "users.manage",
+
+    children: [
+      {
+        text: "المستخدمون",
+        path: "/users",
+        permission: "users.manage",
+      },
+      {
+        text: "الأدوار والصلاحيات",
+        path: "/roles",
+        permission: "users.manage",
+      },
+      {
+        text: "إعدادات الشركة",
+        path: "/company-settings",
+        permission: "users.manage",
+      },
+    ],
   },
 
 ];
@@ -94,9 +223,7 @@ const menuItems = [
 
 function MainLayout() {
 
-
   const location = useLocation();
-
 
   const {
     hasPermission,
@@ -104,12 +231,65 @@ function MainLayout() {
   } = useAuth();
 
 
+  const [openGroups, setOpenGroups] = useState({});
 
-  const visibleMenu = menuItems.filter((item) =>
 
-    hasPermission(item.permission)
+  function toggleGroup(text) {
 
-  );
+    setOpenGroups({
+
+      ...openGroups,
+
+      [text]: !openGroups[text],
+
+    });
+
+  }
+
+
+
+  function renderLink(item) {
+
+    if (!hasPermission(item.permission)) {
+      return null;
+    }
+
+
+    return (
+
+      <ListItem
+        key={item.path}
+        disablePadding
+      >
+
+        <ListItemButton
+
+          component={NavLink}
+
+          to={item.path}
+
+          selected={
+            location.pathname === item.path
+          }
+
+          sx={{
+            pr: 5,
+            textAlign: "right",
+          }}
+
+        >
+
+          <ListItemText
+            primary={item.text}
+          />
+
+        </ListItemButton>
+
+      </ListItem>
+
+    );
+
+  }
 
 
 
@@ -132,7 +312,6 @@ function MainLayout() {
     >
 
 
-
       <Drawer
 
         variant="permanent"
@@ -141,16 +320,16 @@ function MainLayout() {
 
         sx={{
 
-          width: 240,
+          width:240,
 
-          flexShrink: 0,
+          flexShrink:0,
 
 
-          "& .MuiDrawer-paper": {
+          "& .MuiDrawer-paper":{
 
-            width: 240,
+            width:240,
 
-            boxSizing: "border-box",
+            boxSizing:"border-box",
 
           },
 
@@ -159,19 +338,7 @@ function MainLayout() {
       >
 
 
-
-        <Box
-
-          sx={{
-
-            width: 240,
-
-            padding: 2,
-
-          }}
-
-        >
-
+        <Box sx={{width:240,p:2}}>
 
 
           <Typography
@@ -180,11 +347,11 @@ function MainLayout() {
 
             sx={{
 
-              fontWeight: "bold",
+              fontWeight:"bold",
 
-              marginBottom: 1,
+              textAlign:"center",
 
-              textAlign: "center",
+              mb:1,
 
             }}
 
@@ -202,11 +369,11 @@ function MainLayout() {
 
               sx={{
 
-                textAlign: "center",
+                textAlign:"center",
 
-                mb: 2,
+                mb:2,
 
-                fontSize: 14,
+                fontSize:14,
 
               }}
 
@@ -220,55 +387,97 @@ function MainLayout() {
 
 
 
-
           <List>
 
 
-            {visibleMenu.map((item) => (
+          {menuGroups.map((group)=>{
 
 
-              <ListItem
-
-                key={item.path}
-
-                disablePadding
-
-              >
+            if(group.children){
 
 
-                <ListItemButton
-
-                  component={NavLink}
-
-                  to={item.path}
-
-                  selected={
-                    location.pathname === item.path
-                  }
-
-                  sx={{
-
-                    textAlign: "right",
-
-                  }}
-
-                >
+              const visibleChildren =
+                group.children.filter(
+                  item=>hasPermission(item.permission)
+                );
 
 
-                  <ListItemText
-
-                    primary={item.text}
-
-                  />
-
-
-                </ListItemButton>
-
-
-              </ListItem>
+              if(
+                !hasPermission(group.permission)
+                &&
+                visibleChildren.length===0
+              ){
+                return null;
+              }
 
 
-            ))}
+              return (
+
+                <Box key={group.text}>
+
+
+                  <ListItemButton
+
+                    onClick={()=>toggleGroup(group.text)}
+
+                  >
+
+                    {group.icon}
+
+                    <ListItemText
+
+                      primary={group.text}
+
+                      sx={{mr:1}}
+
+                    />
+
+
+                    {
+                      openGroups[group.text]
+                      ?
+                      <ExpandLess/>
+                      :
+                      <ExpandMore/>
+                    }
+
+
+                  </ListItemButton>
+
+
+
+                  <Collapse
+
+                    in={openGroups[group.text]}
+
+                    timeout="auto"
+
+                    unmountOnExit
+
+                  >
+
+                    <List>
+
+                      {
+                        visibleChildren.map(renderLink)
+                      }
+
+                    </List>
+
+                  </Collapse>
+
+
+                </Box>
+
+              );
+
+            }
+
+
+            return renderLink(group);
+
+
+          })}
 
 
           </List>
@@ -281,31 +490,27 @@ function MainLayout() {
 
 
 
-
-
       <Box
 
         component="main"
 
         sx={{
 
-          flexGrow: 1,
+          flexGrow:1,
 
-          width: "calc(100% - 240px)",
+          width:"calc(100% - 240px)",
 
-          minWidth: 0,
+          minWidth:0,
 
-          overflowX: "hidden",
+          overflowX:"hidden",
 
-          padding: 3,
+          p:3,
 
         }}
 
       >
 
-
-        <Outlet />
-
+        <Outlet/>
 
       </Box>
 
@@ -315,7 +520,6 @@ function MainLayout() {
   );
 
 }
-
 
 
 export default MainLayout;

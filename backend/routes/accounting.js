@@ -4,7 +4,7 @@ import db from "../db/database.js";
 const router = Router();
 
 
-// Get Chart Of Accounts
+// دليل الحسابات
 router.get("/accounts", (req, res) => {
 
   const accounts = db.prepare(`
@@ -21,13 +21,13 @@ router.get("/accounts", (req, res) => {
     ORDER BY code
   `).all();
 
-
   res.json(accounts);
 
 });
 
 
-// Get Journal Entries
+
+// القيود اليومية
 router.get("/journal", (req, res) => {
 
   const entries = db.prepare(`
@@ -49,18 +49,12 @@ router.get("/journal", (req, res) => {
 });
 
 
-// Get Journal Entry Details
+
+// تفاصيل قيد يومية
 router.get("/journal/:id", (req, res) => {
 
   const entry = db.prepare(`
-    SELECT
-      id,
-      company_id,
-      entry_date,
-      reference_type,
-      reference_id,
-      description,
-      created_at
+    SELECT *
     FROM journal_entries
     WHERE id = ?
   `).get(req.params.id);
@@ -69,7 +63,7 @@ router.get("/journal/:id", (req, res) => {
   if (!entry) {
 
     return res.status(404).json({
-      error: "Journal entry not found"
+      error:"Journal entry not found"
     });
 
   }
@@ -97,6 +91,148 @@ router.get("/journal/:id", (req, res) => {
   });
 
 });
+
+
+
+
+
+// الأستاذ العام لحساب معين
+// مثال:
+// /api/accounting/ledger/5
+
+router.get("/ledger/:accountId", (req,res)=>{
+
+
+  const account = db.prepare(`
+    SELECT *
+    FROM accounts
+    WHERE id = ?
+  `).get(req.params.accountId);
+
+
+
+  if(!account){
+
+    return res.status(404).json({
+      error:"Account not found"
+    });
+
+  }
+
+
+
+  const movements = db.prepare(`
+    SELECT
+
+      je.entry_date,
+      je.description,
+      je.reference_type,
+
+      jl.debit,
+      jl.credit
+
+    FROM journal_lines jl
+
+    JOIN journal_entries je
+      ON je.id = jl.journal_entry_id
+
+    WHERE jl.account_id = ?
+
+    ORDER BY je.entry_date, je.id
+
+  `).all(req.params.accountId);
+
+
+
+  let balance = 0;
+
+
+  const ledger = movements.map(row=>{
+
+    balance +=
+      Number(row.debit) -
+      Number(row.credit);
+
+
+    return {
+
+      date: row.entry_date,
+
+      description: row.description,
+
+      reference: row.reference_type,
+
+      debit: row.debit,
+
+      credit: row.credit,
+
+      balance
+
+    };
+
+  });
+
+
+
+  res.json({
+
+    account,
+
+    ledger
+
+  });
+
+
+});
+
+
+
+
+
+// كشف حساب بين تاريخين
+
+router.get("/statement/:accountId",(req,res)=>{
+
+
+  const {
+    from,
+    to
+  } = req.query;
+
+
+
+  const rows = db.prepare(`
+    SELECT
+
+      je.entry_date,
+      je.description,
+      jl.debit,
+      jl.credit
+
+    FROM journal_lines jl
+
+    JOIN journal_entries je
+      ON je.id = jl.journal_entry_id
+
+    WHERE jl.account_id = ?
+
+    AND je.entry_date BETWEEN ? AND ?
+
+    ORDER BY je.entry_date
+
+  `).all(
+    req.params.accountId,
+    from || "2000-01-01",
+    to || "2099-12-31"
+  );
+
+
+
+  res.json(rows);
+
+
+});
+
 
 
 export { router as accountingRouter };

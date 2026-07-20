@@ -71,7 +71,7 @@ function createJournalEntry({
 
 
 
-// الحصول على رقم الحساب
+
 function getAccountId(companyId, code) {
 
   const account = db.prepare(`
@@ -93,7 +93,10 @@ function getAccountId(companyId, code) {
 
 
 
+
+
 // حساب تكلفة المنتج
+
 function calculateProductCost(productId) {
 
   const recipe = db.prepare(`
@@ -142,27 +145,31 @@ function calculateProductCost(productId) {
   for (const material of materials) {
 
     const qtyInBase = convertQty(
-      Number(material.qty),
+      material.qty,
       material.unit,
       material.base_unit
     );
 
 
     total +=
-      Number(qtyInBase) *
+      qtyInBase *
       Number(material.purchase_price || 0);
 
   }
 
 
 
-  return total / (Number(recipe.output_qty) || 1);
+  return total /
+    (Number(recipe.output_qty) || 1);
 
 }
 
 
 
+
+
 // قيد شراء
+
 function createPurchaseJournal({
   companyId = 1,
   purchaseId,
@@ -175,67 +182,22 @@ function createPurchaseJournal({
     companyId,
     date,
 
-    referenceType: "PURCHASE",
-    referenceId: purchaseId,
+    referenceType:"PURCHASE",
+    referenceId:purchaseId,
 
     description:
       `Purchase Invoice #${purchaseId}`,
 
-    lines: [
+    lines:[
 
       {
-        accountId:
-          getAccountId(companyId,"1300"),
-        debit: amount,
-        credit: 0
-      },
-
-      {
-        accountId:
-          getAccountId(companyId,"2000"),
-        debit: 0,
-        credit: amount
-      }
-
-    ]
-
-  });
-
-}
-
-
-
-// قيد بيع
-function createSaleJournal({
-  companyId = 1,
-  saleId,
-  amount,
-  date,
-}) {
-
-  return createJournalEntry({
-
-    companyId,
-    date,
-
-    referenceType: "SALE",
-    referenceId: saleId,
-
-    description:
-      `Sales Invoice #${saleId}`,
-
-    lines: [
-
-      {
-        accountId:
-          getAccountId(companyId,"1200"),
-        debit: amount,
+        accountId:getAccountId(companyId,"1300"),
+        debit:amount,
         credit:0
       },
 
       {
-        accountId:
-          getAccountId(companyId,"4000"),
+        accountId:getAccountId(companyId,"2000"),
         debit:0,
         credit:amount
       }
@@ -248,60 +210,40 @@ function createSaleJournal({
 
 
 
-// قيد تكلفة المبيعات
-function createSaleCostJournal({
-  companyId = 1,
+
+
+// قيد بيع
+
+function createSaleJournal({
+  companyId=1,
   saleId,
-  items,
+  amount,
   date,
 }) {
-
-
-  let totalCost = 0;
-
-
-
-  for (const item of items) {
-
-    totalCost +=
-      Number(item.qty) *
-      calculateProductCost(item.itemId);
-
-  }
-
-
-
-  if (totalCost <= 0) {
-    return null;
-  }
-
-
 
   return createJournalEntry({
 
     companyId,
     date,
 
-    referenceType:"SALE_COGS",
+    referenceType:"SALE",
     referenceId:saleId,
 
     description:
-      `COGS For Sales Invoice #${saleId}`,
+      `Sales Invoice #${saleId}`,
 
     lines:[
 
       {
-        accountId:
-          getAccountId(companyId,"5000"),
-        debit:totalCost,
+        accountId:getAccountId(companyId,"1200"),
+        debit:amount,
         credit:0
       },
 
       {
-        accountId:
-          getAccountId(companyId,"1400"),
+        accountId:getAccountId(companyId,"4000"),
         debit:0,
-        credit:totalCost
+        credit:amount
       }
 
     ]
@@ -312,11 +254,198 @@ function createSaleCostJournal({
 
 
 
+
+
+
+
+// قيد تكلفة المبيعات
+
+function createSaleCostJournal({
+
+  companyId=1,
+
+  saleId,
+
+  items,
+
+  date,
+
+}) {
+
+
+  let totalCost = 0;
+
+
+
+  for (const item of items) {
+
+
+    const product = db.prepare(`
+      SELECT base_unit
+      FROM items
+      WHERE id = ?
+    `).get(item.itemId);
+
+
+
+    const productCost =
+      calculateProductCost(item.itemId);
+
+
+
+    const qtyInBase = convertQty(
+      Number(item.qty),
+      item.unit,
+      product?.base_unit
+    );
+
+
+
+    totalCost +=
+      qtyInBase *
+      productCost;
+
+
+  }
+
+
+
+
+
+  if(totalCost <= 0){
+
+    return null;
+
+  }
+
+
+
+
+
+
+  return createJournalEntry({
+
+    companyId,
+
+    date,
+
+    referenceType:"SALE_COGS",
+
+    referenceId:saleId,
+
+    description:
+      `COGS For Sales Invoice #${saleId}`,
+
+    lines:[
+
+      {
+        accountId:getAccountId(companyId,"5000"),
+        debit:totalCost,
+        credit:0
+      },
+
+      {
+        accountId:getAccountId(companyId,"1400"),
+        debit:0,
+        credit:totalCost
+      }
+
+    ]
+
+  });
+
+
+}
+
+
+
+
+
+
+
+// قيد الإنتاج
+// تحويل تكلفة الخامات إلى مخزون منتجات تامة
+
+function createProductionJournal({
+
+  companyId = 1,
+
+  productionId,
+
+  productId,
+
+  qty,
+
+  date,
+
+}) {
+
+
+  const productCost =
+    calculateProductCost(productId);
+
+
+  const totalCost =
+    Number(qty) * productCost;
+
+
+
+  if(totalCost <= 0){
+
+    return null;
+
+  }
+
+
+
+  return createJournalEntry({
+
+    companyId,
+
+    date,
+
+    referenceType:"PRODUCTION",
+
+    referenceId:productionId,
+
+    description:
+      `Production Order #${productionId}`,
+
+    lines:[
+
+      {
+        accountId:getAccountId(companyId,"1400"),
+        debit:totalCost,
+        credit:0
+      },
+
+      {
+        accountId:getAccountId(companyId,"1300"),
+        debit:0,
+        credit:totalCost
+      }
+
+    ]
+
+  });
+
+
+}
+
+
+
+
+
+
+
 export {
+
   createJournalEntry,
   getAccountId,
   createPurchaseJournal,
   createSaleJournal,
   calculateProductCost,
-  createSaleCostJournal
+  createSaleCostJournal,
+  createProductionJournal
+
 };
