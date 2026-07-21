@@ -635,3 +635,62 @@ Required:
 Authentication is completed.
 
 Authorization enforcement is the next development layer.
+
+---
+
+# Development Update - 21 July 2026
+
+## ERP Core Security Authorization Layer
+
+Completed:
+
+- Moved permissions definition into ERP Core security.
+- Added JWT authentication foundation.
+- Added authorization middleware.
+- Protected first ERP route using permission-based access.
+
+Implemented:
+
+Backend:
+
+- backend/core/security/permissions.js
+- backend/core/security/authMiddleware.js
+
+Protected Module:
+
+- Users Management
+
+Security Flow:
+
+User
+↓
+Login
+↓
+JWT Token
+↓
+Authentication Middleware
+↓
+Role Permissions Check
+↓
+Route Access
+
+
+Current Security Status:
+
+✅ Permission Registry  
+✅ Roles Foundation  
+✅ Users Foundation  
+✅ Role Permissions  
+✅ JWT Authentication  
+✅ Authorization Middleware  
+✅ Protected Users Routes  
+
+
+Next Security Phase:
+
+- Apply permission matrix to ERP modules.
+- Protect Inventory routes.
+- Protect Sales routes.
+- Protect Purchases routes.
+- Protect Production routes.
+- Protect Accounting routes.
