@@ -35,6 +35,14 @@ export const defaultPermissions = [
     action: "edit"
   },
 
+  {
+    code: "items.item.delete",
+    name: "Delete Items",
+    module: "items",
+    resource: "item",
+    action: "delete"
+  },
+
 
   // Inventory
   {
@@ -43,6 +51,22 @@ export const defaultPermissions = [
     module: "inventory",
     resource: "stock",
     action: "view"
+  },
+
+  {
+    code: "inventory.stock.adjust",
+    name: "Adjust Inventory Stock",
+    module: "inventory",
+    resource: "stock",
+    action: "adjust"
+  },
+
+  {
+    code: "inventory.stock.transfer",
+    name: "Transfer Inventory Stock",
+    module: "inventory",
+    resource: "stock",
+    action: "transfer"
   },
 
 
@@ -63,6 +87,22 @@ export const defaultPermissions = [
     action: "create"
   },
 
+  {
+    code: "production.order.edit",
+    name: "Edit Production Orders",
+    module: "production",
+    resource: "order",
+    action: "edit"
+  },
+
+  {
+    code: "production.order.approve",
+    name: "Approve Production Orders",
+    module: "production",
+    resource: "order",
+    action: "approve"
+  },
+
 
   // Purchases
   {
@@ -79,6 +119,30 @@ export const defaultPermissions = [
     module: "purchases",
     resource: "invoice",
     action: "create"
+  },
+
+  {
+    code: "purchases.invoice.edit",
+    name: "Edit Purchase Invoices",
+    module: "purchases",
+    resource: "invoice",
+    action: "edit"
+  },
+
+  {
+    code: "purchases.invoice.approve",
+    name: "Approve Purchase Invoices",
+    module: "purchases",
+    resource: "invoice",
+    action: "approve"
+  },
+
+  {
+    code: "purchases.invoice.post",
+    name: "Post Purchase Invoices",
+    module: "purchases",
+    resource: "invoice",
+    action: "post"
   },
 
 
@@ -100,11 +164,95 @@ export const defaultPermissions = [
   },
 
   {
+    code: "sales.invoice.edit",
+    name: "Edit Sales Invoices",
+    module: "sales",
+    resource: "invoice",
+    action: "edit"
+  },
+
+  {
     code: "sales.invoice.approve",
     name: "Approve Sales Invoices",
     module: "sales",
     resource: "invoice",
     action: "approve"
+  },
+
+  {
+    code: "sales.invoice.post",
+    name: "Post Sales Invoices",
+    module: "sales",
+    resource: "invoice",
+    action: "post"
+  },
+
+
+  // Customers
+  {
+    code: "customers.customer.view",
+    name: "View Customers",
+    module: "customers",
+    resource: "customer",
+    action: "view"
+  },
+
+  {
+    code: "customers.customer.create",
+    name: "Create Customers",
+    module: "customers",
+    resource: "customer",
+    action: "create"
+  },
+
+  {
+    code: "customers.customer.edit",
+    name: "Edit Customers",
+    module: "customers",
+    resource: "customer",
+    action: "edit"
+  },
+
+  {
+    code: "customers.customer.delete",
+    name: "Delete Customers",
+    module: "customers",
+    resource: "customer",
+    action: "delete"
+  },
+
+
+  // Suppliers
+  {
+    code: "suppliers.supplier.view",
+    name: "View Suppliers",
+    module: "suppliers",
+    resource: "supplier",
+    action: "view"
+  },
+
+  {
+    code: "suppliers.supplier.create",
+    name: "Create Suppliers",
+    module: "suppliers",
+    resource: "supplier",
+    action: "create"
+  },
+
+  {
+    code: "suppliers.supplier.edit",
+    name: "Edit Suppliers",
+    module: "suppliers",
+    resource: "supplier",
+    action: "edit"
+  },
+
+  {
+    code: "suppliers.supplier.delete",
+    name: "Delete Suppliers",
+    module: "suppliers",
+    resource: "supplier",
+    action: "delete"
   },
 
 
@@ -117,6 +265,14 @@ export const defaultPermissions = [
     action: "view"
   },
 
+  {
+    code: "reports.report.export",
+    name: "Export Reports",
+    module: "reports",
+    resource: "report",
+    action: "export"
+  },
+
 
   // Users & Security
   {
@@ -124,6 +280,22 @@ export const defaultPermissions = [
     name: "Manage Users",
     module: "security",
     resource: "users",
+    action: "manage"
+  },
+
+  {
+    code: "roles.manage",
+    name: "Manage Roles",
+    module: "security",
+    resource: "roles",
+    action: "manage"
+  },
+
+  {
+    code: "permissions.manage",
+    name: "Manage Permissions",
+    module: "security",
+    resource: "permissions",
     action: "manage"
   },
 
@@ -138,11 +310,35 @@ export const defaultPermissions = [
   },
 
   {
+    code: "accounting.account.create",
+    name: "Create Accounts",
+    module: "accounting",
+    resource: "account",
+    action: "create"
+  },
+
+  {
+    code: "accounting.account.edit",
+    name: "Edit Accounts",
+    module: "accounting",
+    resource: "account",
+    action: "edit"
+  },
+
+  {
     code: "accounting.journal.view",
     name: "View Journal Entries",
     module: "accounting",
     resource: "journal",
     action: "view"
+  },
+
+  {
+    code: "accounting.journal.create",
+    name: "Create Journal Entries",
+    module: "accounting",
+    resource: "journal",
+    action: "create"
   },
 
   {
@@ -167,6 +363,14 @@ export const defaultPermissions = [
     module: "accounting",
     resource: "reports",
     action: "view"
+  },
+
+  {
+    code: "accounting.reports.export",
+    name: "Export Financial Reports",
+    module: "accounting",
+    resource: "reports",
+    action: "export"
   }
 
 ];
