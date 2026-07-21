@@ -29,6 +29,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 
 
 const menuGroups = [
+
   {
     text:"لوحة التحكم",
     icon:<Dashboard />,
@@ -36,76 +37,174 @@ const menuGroups = [
     permission:"dashboard.view",
   },
 
+
   {
     text:"المخزون",
     icon:<Inventory />,
     permission:"inventory.stock.view",
+
     children:[
-      {text:"الأصناف",path:"/items",permission:"items.item.view"},
-      {text:"حركة المخزون",path:"/inventory",permission:"inventory.stock.view"},
+      {
+        text:"الأصناف",
+        path:"/items",
+        permission:"items.item.view",
+      },
+      {
+        text:"حركة المخزون",
+        path:"/inventory",
+        permission:"inventory.stock.view",
+      },
     ],
   },
+
 
   {
     text:"الإنتاج",
     icon:<Factory />,
     permission:"production.order.view",
+
     children:[
-      {text:"الوصفات",path:"/recipes",permission:"production.order.view"},
-      {text:"أوامر الإنتاج",path:"/production",permission:"production.order.view"},
+      {
+        text:"الوصفات",
+        path:"/recipes",
+        permission:"items.item.view",
+      },
+      {
+        text:"أوامر الإنتاج",
+        path:"/production",
+        permission:"production.order.view",
+      },
     ],
   },
+
 
   {
     text:"المبيعات",
     icon:<ShoppingCart />,
     permission:"sales.invoice.view",
+
     children:[
-      {text:"فواتير البيع",path:"/sales",permission:"sales.invoice.view"},
-      {text:"العملاء",path:"/customers",permission:"customers.customer.view"},
+      {
+        text:"فواتير البيع",
+        path:"/sales",
+        permission:"sales.invoice.view",
+      },
+      {
+        text:"العملاء",
+        path:"/customers",
+        permission:"customers.customer.view",
+      },
     ],
   },
+
 
   {
     text:"المشتريات",
     icon:<Receipt />,
     permission:"purchases.invoice.view",
+
     children:[
-      {text:"فواتير الشراء",path:"/purchases",permission:"purchases.invoice.view"},
-      {text:"الموردون",path:"/suppliers",permission:"suppliers.supplier.view"},
+      {
+        text:"فواتير الشراء",
+        path:"/purchases",
+        permission:"purchases.invoice.view",
+      },
+      {
+        text:"الموردون",
+        path:"/suppliers",
+        permission:"suppliers.supplier.view",
+      },
     ],
   },
+
+
+  {
+    text:"الحسابات",
+    icon:<AccountBalance />,
+    permission:"accounting.account.view",
+
+    children:[
+      {
+        text:"دليل الحسابات",
+        path:"/accounting/accounts",
+        permission:"accounting.account.view",
+      },
+      {
+        text:"القيود اليومية",
+        path:"/accounting/journal",
+        permission:"accounting.journal.view",
+      },
+      {
+        text:"دفتر الأستاذ",
+        path:"/accounting/ledger",
+        permission:"accounting.ledger.view",
+      },
+    ],
+  },
+
 
   {
     text:"التقارير",
     icon:<Assessment />,
     permission:"reports.report.view",
+
     children:[
-      {text:"التقارير المالية",path:"/reports",permission:"reports.report.view"},
+      {
+        text:"التقارير المالية",
+        path:"/reports",
+        permission:"reports.report.view",
+      },
     ],
   },
+
 
   {
     text:"الإدارة",
     icon:<Settings />,
     permission:"users.manage",
+
     children:[
-      {text:"المستخدمون",path:"/users",permission:"users.manage"},
-      {text:"الأدوار والصلاحيات",path:"/roles",permission:"roles.manage"},
-      {text:"إعدادات الشركة",path:"/company-settings",permission:"users.manage"},
+      {
+        text:"المستخدمون",
+        path:"/users",
+        permission:"users.manage",
+      },
+      {
+        text:"الأدوار والصلاحيات",
+        path:"/roles",
+        permission:"roles.manage",
+      },
+      {
+        text:"إعدادات الشركة",
+        path:"/company-settings",
+        permission:"users.manage",
+      },
+      {
+        text:"إعدادات النظام",
+        path:"/system-settings",
+        permission:"users.manage",
+      },
     ],
   },
+
 ];
+
 
 
 function MainLayout(){
 
   const location = useLocation();
 
-  const {hasPermission,user}=useAuth();
+  const {
+    hasPermission,
+    user,
+  } = useAuth();
+
 
   const [openGroups,setOpenGroups]=useState({});
+
   const [coreMenus,setCoreMenus]=useState([]);
+
 
 
   useEffect(()=>{
@@ -113,11 +212,21 @@ function MainLayout(){
     fetch("http://localhost:3001/api/core/modules")
       .then(res=>res.json())
       .then(data=>{
-        setCoreMenus(data.menus || []);
+
+        setCoreMenus(
+          data.menus || []
+        );
+
       })
       .catch(err=>{
-        console.log("Core menu error",err);
+
+        console.log(
+          "Core menu error",
+          err
+        );
+
       });
+
 
   },[]);
 
@@ -126,8 +235,11 @@ function MainLayout(){
   function toggleGroup(id){
 
     setOpenGroups(prev=>({
+
       ...prev,
+
       [id]:!prev[id]
+
     }));
 
   }
@@ -136,47 +248,75 @@ function MainLayout(){
 
   function renderLink(item){
 
-    if(!hasPermission(item.permission))
+    if(!hasPermission(item.permission)){
+
       return null;
+
+    }
 
 
     return(
-      <ListItem key={item.path} disablePadding>
+
+      <ListItem
+        key={item.path}
+        disablePadding
+      >
 
         <ListItemButton
+
           component={NavLink}
+
           to={item.path}
-          selected={location.pathname===item.path}
-          sx={{pr:5,textAlign:"right"}}
+
+          selected={
+            location.pathname===item.path
+          }
+
+          sx={{
+            pr:5,
+            textAlign:"right",
+          }}
+
         >
 
-          <ListItemText primary={item.text}/>
+          <ListItemText
+            primary={item.text}
+          />
 
         </ListItemButton>
 
+
       </ListItem>
+
     );
 
   }
-
-
-
   function renderCoreMenu(menu){
 
     return(
 
       <Box key={menu.id}>
 
+
         <ListItemButton
-          onClick={()=>toggleGroup(menu.id)}
+
+          onClick={() =>
+            toggleGroup(menu.id)
+          }
+
         >
 
           <AccountBalance/>
 
+
           <ListItemText
+
             primary={menu.title}
+
             sx={{mr:1}}
+
           />
+
 
           {
             openGroups[menu.id]
@@ -186,42 +326,74 @@ function MainLayout(){
             <ExpandMore/>
           }
 
+
         </ListItemButton>
 
 
+
         <Collapse
+
           in={openGroups[menu.id]}
+
           timeout="auto"
+
           unmountOnExit
+
         >
 
           <List>
 
-          {
-            menu.children?.map(item=>
 
-              hasPermission(item.permission) &&
+            {
+              menu.children?.map(item=>
 
-              <ListItem key={item.id} disablePadding>
 
-                <ListItemButton
-                  component={NavLink}
-                  to={item.path}
-                  sx={{pr:5}}
+                hasPermission(item.permission)
+
+                &&
+
+                <ListItem
+
+                  key={item.id}
+
+                  disablePadding
+
                 >
 
-                  <ListItemText primary={item.title}/>
+                  <ListItemButton
 
-                </ListItemButton>
+                    component={NavLink}
 
-              </ListItem>
+                    to={item.path}
 
-            )
-          }
+                    sx={{
+                      pr:5
+                    }}
+
+                  >
+
+                    <ListItemText
+
+                      primary={item.title}
+
+                    />
+
+
+                  </ListItemButton>
+
+
+                </ListItem>
+
+
+              )
+            }
+
 
           </List>
 
+
         </Collapse>
+
 
       </Box>
 
@@ -231,145 +403,278 @@ function MainLayout(){
 
 
 
+
   return(
 
     <Box
+
       sx={{
+
         minHeight:"100vh",
+
         direction:"rtl",
+
         display:"flex",
-        backgroundColor:"#f5f5f5"
+
+        backgroundColor:"#f5f5f5",
+
       }}
+
     >
 
+
       <Drawer
+
         variant="permanent"
+
         anchor="right"
+
         sx={{
+
           width:240,
+
           flexShrink:0,
+
           "& .MuiDrawer-paper":{
+
             width:240,
-            boxSizing:"border-box"
-          }
+
+            boxSizing:"border-box",
+
+          },
+
         }}
+
       >
 
-        <Box sx={{width:240,p:2}}>
+
+        <Box
+
+          sx={{
+
+            width:240,
+
+            p:2,
+
+          }}
+
+        >
+
 
           <Typography
+
             variant="h5"
+
             sx={{
+
               fontWeight:"bold",
+
               textAlign:"center",
-              mb:1
+
+              mb:1,
+
             }}
+
           >
+
             SweetERP
+
           </Typography>
+
 
 
           {
             user &&
-            <Typography sx={{textAlign:"center",mb:2}}>
+
+            <Typography
+
+              sx={{
+
+                textAlign:"center",
+
+                mb:2,
+
+              }}
+
+            >
+
               {user.full_name}
+
             </Typography>
+
           }
 
 
+
           <List>
+
 
             {
               coreMenus.map(renderCoreMenu)
             }
 
 
+
             {
               menuGroups.map(group=>{
 
+
                 if(group.children){
 
+
                   const children =
+
                     group.children.filter(
-                      x=>hasPermission(x.permission)
+
+                      item =>
+                        hasPermission(
+                          item.permission
+                        )
+
                     );
 
 
-                  if(children.length===0)
+
+                  if(children.length===0){
+
                     return null;
+
+                  }
+
 
 
                   return(
 
-                    <Box key={group.text}>
+
+                    <Box
+
+                      key={group.text}
+
+                    >
+
 
                       <ListItemButton
-                        onClick={()=>toggleGroup(group.text)}
+
+                        onClick={() =>
+                          toggleGroup(
+                            group.text
+                          )
+                        }
+
                       >
+
 
                         {group.icon}
 
+
+
                         <ListItemText
+
                           primary={group.text}
-                          sx={{mr:1}}
+
+                          sx={{
+                            mr:1
+                          }}
+
                         />
+
+
 
                         {
                           openGroups[group.text]
+
                           ?
+
                           <ExpandLess/>
+
                           :
+
                           <ExpandMore/>
+
                         }
+
 
                       </ListItemButton>
 
 
+
+
                       <Collapse
-                        in={openGroups[group.text]}
+
+                        in={
+                          openGroups[group.text]
+                        }
+
                         timeout="auto"
+
                         unmountOnExit
+
                       >
 
+
                         <List>
+
+
                           {
-                            children.map(renderLink)
+                            children.map(
+                              renderLink
+                            )
                           }
+
+
                         </List>
+
 
                       </Collapse>
 
 
                     </Box>
 
+
                   );
+
 
                 }
 
 
+
                 return renderLink(group);
 
+
               })
+
             }
+
 
           </List>
 
 
         </Box>
 
+
       </Drawer>
 
 
 
+
       <Box
+
         component="main"
+
         sx={{
+
           flexGrow:1,
+
           width:"calc(100% - 240px)",
+
           minWidth:0,
+
           overflowX:"hidden",
-          p:3
+
+          p:3,
+
         }}
+
       >
 
         <Outlet/>
@@ -382,6 +687,7 @@ function MainLayout(){
   );
 
 }
+
 
 
 export default MainLayout;
