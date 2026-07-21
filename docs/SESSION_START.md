@@ -1,104 +1,109 @@
-# SweetERP Session Start
+# ERP Platform - SESSION START
 
-نكمل مشروع SweetERP.
+## Current Project Identity
 
-هذا مشروع ERP متكامل قابل لإعادة التخصيص.
-النموذج الأول للتطبيق هو نشاط تصنيع وبيع الحلويات.
+This project is not SweetERP only.
 
-المرجع الأساسي للمشروع:
-docs/PROJECT_MASTER_PLAN.md
-
-تعامل مع المشروع على أنه مشروع قائم وليس مشروعاً جديداً.
-
-قبل أي اقتراح أو تعديل:
-- راجع حالة المشروع الحالية.
-- لا تعيد شرح ما تم إنجازه.
-- لا تعيد بناء الوحدات المكتملة.
-- احترم الهيكل الحالي للمشروع.
-
-القواعد الأساسية:
-- frontend_new هو الواجهة المعتمدة.
-- Backend الحالي هو المصدر المعتمد للمنطق.
-- أي تعديل كبير يجب مراجعته قبل التنفيذ.
-- قبل الحفظ:
-  git status
-  git diff --stat
-
-طريقة العمل:
-1. تحديد الهدف الحالي.
-2. تنفيذ التعديل المطلوب فقط.
-3. اختبار النتيجة.
-4. حفظ المرحلة في Git.
-
-الحالة الحالية:
-المشروع في مرحلة التكامل النهائي:
-- اختبار الدورات التشغيلية.
-- استكمال المحاسبة.
-- حسابات التكاليف.
-- التقارير.
-- المستندات والفواتير.
-- تحسين الواجهة.
-
-آخر مرجع تفصيلي:
-docs/PROJECT_MASTER_PLAN.md
+SweetERP is the first application running on top of a customizable ERP Platform.
 
 ---
 
-# Session Update - 21 July 2026
+# Completed Work
 
-## Completed Today
-
-ERP Core Security Foundation expanded.
+## Platform Core
 
 Completed:
 
-- Moved permissions definitions into ERP Core security layer.
-- Added JWT authentication support.
-- Login now generates authentication token.
-- Verified admin login successfully.
-- Verified permissions loading from database.
+- Module Registry
+- Module Loader
+- Module Manager
+- Menu Registry
+- Manifest System
+- Dynamic Core Modules API
 
+API tested successfully:
 
-## Current Stable Commit
+GET /api/core/modules
 
-f0567ef
-
-Add JWT authentication to ERP Core security
-
-
-## Next Task
-
-Implement Authorization Middleware:
-
-- Verify JWT tokens.
-- Attach authenticated user to requests.
-- Check required permissions.
-- Protect ERP API modules.
-
-
-## Current Project Direction
-
-Continue building ERP Core as a customizable ERP platform.
-
-Do not rebuild completed business modules.
-
-Continue extending the core foundation.
 
 ---
 
-# Latest Session Update - 21 July 2026
+## Accounting Module
 
-Completed ERP Core Security Authorization:
+Created:
 
-- Added JWT authentication.
-- Added authorization middleware.
-- Tested protected route.
-- Users route now requires authentication and users.manage permission.
+backend/core/modules/accounting/manifest.js
 
-Latest Stable Commit:
 
-425cf0e
+Contains:
 
-Next Step:
+- Module information
+- Dependencies
+- Permissions
+- Menus
+- Routes
+- Reports
 
-Build ERP permission matrix and apply route protection gradually.
+
+Accounting menu is now loaded from the platform manifest.
+
+---
+
+## Frontend
+
+Updated:
+
+frontend_new/src/layouts/MainLayout.jsx
+
+
+Completed:
+
+- Core menus integration
+- Dynamic Accounting menu loading
+- Permission-based menu display
+
+
+Current visible Accounting menus:
+
+- Chart of Accounts
+- Journal Entries
+- Ledger
+
+
+---
+
+# Current Stable Point
+
+ERP Platform Core Menu Integration
+
+Status:
+STABLE
+
+
+---
+
+# Next Session Start
+
+Do NOT review completed work again.
+
+Start from:
+
+## Dynamic Module Architecture
+
+Next tasks:
+
+1. Convert remaining modules to Manifest System.
+2. Dynamic Route Loading.
+3. Real Permission Engine.
+4. Users / Roles integration.
+5. Continue building ERP Platform Core.
+
+---
+
+Before any modification:
+
+Run:
+
+git status
+
+Save completed phases with Git commit.
