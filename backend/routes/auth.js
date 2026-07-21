@@ -1,7 +1,10 @@
 import { Router } from "express";
+import jwt from "jsonwebtoken";
 import db from "../db/database.js";
 
 const router = Router();
+
+const JWT_SECRET = "SWEETERP_CORE_SECRET_KEY";
 
 
 // Login
@@ -30,15 +33,23 @@ router.post("/login", (req, res) => {
       users.full_name,
       users.email,
       users.active,
+      users.company_id,
       companies.name AS company_name,
+      roles.id AS role_id,
       roles.name AS role_name
+
     FROM users
+
     JOIN companies
       ON companies.id = users.company_id
+
     JOIN roles
       ON roles.id = users.role_id
+
     WHERE users.username = ?
+
   `).get(username);
+
 
 
   if (!user) {
@@ -50,6 +61,7 @@ router.post("/login", (req, res) => {
   }
 
 
+
   if (!user.active) {
 
     return res.status(403).json({
@@ -57,6 +69,7 @@ router.post("/login", (req, res) => {
     });
 
   }
+
 
 
   if (user.password_hash !== password) {
@@ -68,23 +81,53 @@ router.post("/login", (req, res) => {
   }
 
 
+
   const permissions = db.prepare(`
+
     SELECT
+
       permissions.code
+
     FROM permissions
+
     JOIN role_permissions
+
       ON role_permissions.permission_id = permissions.id
-    JOIN users
-      ON users.role_id = role_permissions.role_id
-    WHERE users.id = ?
+
+    WHERE role_permissions.role_id = ?
+
     ORDER BY permissions.code
-  `).all(user.id);
+
+  `).all(user.role_id);
+
+
+
+  const token = jwt.sign(
+
+    {
+      id: user.id,
+      username: user.username,
+      company_id: user.company_id,
+      role_id: user.role_id,
+    },
+
+    JWT_SECRET,
+
+    {
+      expiresIn: "8h",
+    }
+
+  );
+
 
 
   delete user.password_hash;
 
 
+
   res.json({
+
+    token,
 
     user,
 
@@ -94,7 +137,10 @@ router.post("/login", (req, res) => {
 
   });
 
+
 });
+
+
 
 
 // Logout
@@ -105,6 +151,8 @@ router.post("/logout", (req, res) => {
   });
 
 });
+
+
 
 
 // Current User
