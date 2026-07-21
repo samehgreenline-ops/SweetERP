@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import api from "../../services/api";
 
 import {
   Paper,
@@ -17,6 +18,7 @@ import {
   TextField,
   MenuItem,
   Box,
+  Alert,
 } from "@mui/material";
 
 
@@ -28,6 +30,7 @@ function Users() {
 
   const [roles, setRoles] = useState([]);
 
+  const [error, setError] = useState("");
 
   const [open, setOpen] = useState(false);
 
@@ -45,44 +48,79 @@ function Users() {
 
 
 
-  function loadUsers() {
+  async function loadUsers(){
 
-    fetch("/api/users")
-      .then((res) => res.json())
-      .then((data) => {
-        setUsers(data);
-      });
+    try {
+
+      const res = await api.get("/users");
+
+      setUsers(res.data);
+
+    }
+    catch(err){
+
+      console.error(err);
+
+      setError(err.message);
+
+    }
 
   }
 
 
 
-  useEffect(() => {
+  async function loadCompanies(){
+
+    try{
+
+      const res = await api.get("/companies");
+
+      setCompanies(res.data);
+
+    }
+    catch(err){
+
+      console.error(err);
+
+    }
+
+  }
+
+
+
+  async function loadRoles(){
+
+    try{
+
+      const res = await api.get("/roles");
+
+      setRoles(res.data);
+
+    }
+    catch(err){
+
+      console.error(err);
+
+    }
+
+  }
+
+
+
+
+  useEffect(()=>{
 
     loadUsers();
+    loadCompanies();
+    loadRoles();
 
-
-    fetch("/api/companies")
-      .then((res) => res.json())
-      .then((data) => {
-        setCompanies(data);
-      });
-
-
-    fetch("/api/roles")
-      .then((res) => res.json())
-      .then((data) => {
-        setRoles(data);
-      });
-
-
-  }, []);
+  },[]);
 
 
 
 
 
-  function handleChange(e) {
+  function handleChange(e){
 
     setForm({
 
@@ -98,26 +136,15 @@ function Users() {
 
 
 
-  function saveUser() {
 
+  async function saveUser(){
 
-    fetch("/api/users", {
+    try{
 
-      method: "POST",
-
-      headers: {
-
-        "Content-Type": "application/json",
-
-      },
-
-      body: JSON.stringify(form),
-
-    })
-
-    .then((res) => res.json())
-
-    .then(() => {
+      await api.post(
+        "/users",
+        form
+      );
 
 
       setOpen(false);
@@ -125,12 +152,12 @@ function Users() {
 
       setForm({
 
-        company_id: "",
-        role_id: "",
-        username: "",
-        password_hash: "",
-        full_name: "",
-        email: "",
+        company_id:"",
+        role_id:"",
+        username:"",
+        password_hash:"",
+        full_name:"",
+        email:"",
 
       });
 
@@ -138,8 +165,12 @@ function Users() {
       loadUsers();
 
 
-    });
+    }
+    catch(err){
 
+      setError(err.message);
+
+    }
 
   }
 
@@ -147,22 +178,35 @@ function Users() {
 
 
 
+
   return (
 
-    <Paper sx={{ p: 3 }}>
+    <Paper sx={{p:3}}>
+
+
+      {error &&
+
+        <Alert severity="error" sx={{mb:2}}>
+
+          {error}
+
+        </Alert>
+
+      }
+
 
 
       <Box
 
         sx={{
 
-          display: "flex",
+          display:"flex",
 
-          justifyContent: "space-between",
+          justifyContent:"space-between",
 
-          alignItems: "center",
+          alignItems:"center",
 
-          mb: 3,
+          mb:3
 
         }}
 
@@ -179,7 +223,7 @@ function Users() {
 
           variant="contained"
 
-          onClick={() => setOpen(true)}
+          onClick={()=>setOpen(true)}
 
         >
 
@@ -223,56 +267,44 @@ function Users() {
 
 
 
-
-
           <TableBody>
 
 
-            {users.map((user) => (
+          {users.map((user)=>(
 
 
-              <TableRow key={user.id}>
+            <TableRow key={user.id}>
 
 
-                <TableCell>
-                  {user.id}
-                </TableCell>
+              <TableCell>{user.id}</TableCell>
 
 
-                <TableCell>
-                  {user.username}
-                </TableCell>
+              <TableCell>{user.username}</TableCell>
 
 
-                <TableCell>
-                  {user.full_name}
-                </TableCell>
+              <TableCell>{user.full_name}</TableCell>
 
 
-                <TableCell>
-                  {user.company_name}
-                </TableCell>
+              <TableCell>{user.company_name}</TableCell>
 
 
-                <TableCell>
-                  {user.role_name}
-                </TableCell>
+              <TableCell>{user.role_name}</TableCell>
 
 
-                <TableCell>
-                  {user.email}
-                </TableCell>
+              <TableCell>{user.email}</TableCell>
 
 
-                <TableCell>
-                  {user.active ? "Active" : "Inactive"}
-                </TableCell>
+              <TableCell>
+
+                {user.active ? "Active":"Inactive"}
+
+              </TableCell>
 
 
-              </TableRow>
+            </TableRow>
 
 
-            ))}
+          ))}
 
 
           </TableBody>
@@ -287,11 +319,12 @@ function Users() {
 
 
 
+
       <Dialog
 
         open={open}
 
-        onClose={() => setOpen(false)}
+        onClose={()=>setOpen(false)}
 
         fullWidth
 
@@ -299,12 +332,17 @@ function Users() {
 
       >
 
+
         <DialogTitle>
+
           Add User
+
         </DialogTitle>
 
 
+
         <DialogContent>
+
 
 
           <TextField
@@ -381,6 +419,7 @@ function Users() {
 
 
 
+
           <TextField
 
             select
@@ -399,7 +438,7 @@ function Users() {
 
           >
 
-            {companies.map((company) => (
+            {companies.map(company=>(
 
               <MenuItem
 
@@ -440,8 +479,7 @@ function Users() {
 
           >
 
-
-            {roles.map((role) => (
+            {roles.map(role=>(
 
               <MenuItem
 
@@ -461,8 +499,8 @@ function Users() {
           </TextField>
 
 
-        </DialogContent>
 
+        </DialogContent>
 
 
 
@@ -471,7 +509,7 @@ function Users() {
 
           <Button
 
-            onClick={() => setOpen(false)}
+            onClick={()=>setOpen(false)}
 
           >
 
@@ -494,7 +532,9 @@ function Users() {
           </Button>
 
 
+
         </DialogActions>
+
 
 
       </Dialog>
@@ -506,6 +546,7 @@ function Users() {
   );
 
 }
+
 
 
 export default Users;

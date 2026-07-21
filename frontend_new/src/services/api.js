@@ -3,9 +3,10 @@ const API_BASE = "http://localhost:3001/api";
 
 async function handleResponse(res) {
 
-  const data = await res.json().catch(()=>({}));
+  const data = await res.json().catch(() => ({}));
 
-  if(!res.ok){
+
+  if (!res.ok) {
 
     throw new Error(
       data.error || "حدث خطأ في الاتصال بالخادم"
@@ -13,35 +14,54 @@ async function handleResponse(res) {
 
   }
 
+
   return data;
 
 }
 
 
 
-export async function apiGet(path){
 
-  const res = await fetch(
-    `${API_BASE}${path}`
-  );
+function getHeaders(extra = {}) {
 
-  return handleResponse(res);
+  const token = localStorage.getItem("token");
+
+
+  return {
+
+    "Content-Type": "application/json",
+
+    ...(token
+      ? {
+          Authorization: `Bearer ${token}`
+        }
+      : {}),
+
+    ...extra
+
+  };
 
 }
 
 
 
-export async function apiPost(path, body){
+
+
+export async function apiGet(path) {
+
 
   const res = await fetch(
+
     `${API_BASE}${path}`,
+
     {
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify(body)
+
+      method: "GET",
+
+      headers: getHeaders()
+
     }
+
   );
 
 
@@ -51,17 +71,25 @@ export async function apiPost(path, body){
 
 
 
-export async function apiPut(path, body){
+
+
+export async function apiPost(path, body) {
+
 
   const res = await fetch(
+
     `${API_BASE}${path}`,
+
     {
-      method:"PUT",
-      headers:{
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify(body)
+
+      method: "POST",
+
+      headers: getHeaders(),
+
+      body: JSON.stringify(body)
+
     }
+
   );
 
 
@@ -71,13 +99,25 @@ export async function apiPut(path, body){
 
 
 
-export async function apiDelete(path){
+
+
+export async function apiPut(path, body) {
+
 
   const res = await fetch(
+
     `${API_BASE}${path}`,
+
     {
-      method:"DELETE"
+
+      method: "PUT",
+
+      headers: getHeaders(),
+
+      body: JSON.stringify(body)
+
     }
+
   );
 
 
@@ -87,9 +127,36 @@ export async function apiDelete(path){
 
 
 
-// توافق مع الملفات التي تستخدم api.get / api.post
+
+
+export async function apiDelete(path) {
+
+
+  const res = await fetch(
+
+    `${API_BASE}${path}`,
+
+    {
+
+      method: "DELETE",
+
+      headers: getHeaders()
+
+    }
+
+  );
+
+
+  return handleResponse(res);
+
+}
+
+
+
+
 
 const api = {
+
 
   get: async(path)=>{
 
@@ -100,6 +167,7 @@ const api = {
     };
 
   },
+
 
 
   post: async(path,body)=>{
@@ -113,6 +181,7 @@ const api = {
   },
 
 
+
   put: async(path,body)=>{
 
     const data = await apiPut(path,body);
@@ -122,6 +191,7 @@ const api = {
     };
 
   },
+
 
 
   delete: async(path)=>{
@@ -134,7 +204,9 @@ const api = {
 
   }
 
+
 };
+
 
 
 export default api;
