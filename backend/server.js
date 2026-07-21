@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 
+import coreRouter from "./routes/coreRouter.js";
+
 import { itemsRouter } from "./routes/items.js";
 import { recipesRouter } from "./routes/recipes.js";
 import { inventoryRouter } from "./routes/inventory.js";
@@ -27,14 +29,17 @@ import "./db/database.js";
 import "./db/migrate.js";
 
 
+
 const app = express();
 
 const PORT = 3001;
 
 
+
 app.use(cors());
 
 app.use(express.json());
+
 
 
 
@@ -53,6 +58,18 @@ app.get("/api/health", (req,res)=>{
   });
 
 });
+
+
+
+
+
+// ERP Platform Core
+
+app.use(
+  "/api/core",
+  coreRouter
+);
+
 
 
 
@@ -80,6 +97,7 @@ app.use("/api/reports", reportsRouter);
 
 
 
+
 // System Modules
 
 app.use("/api/companies", companiesRouter);
@@ -95,12 +113,15 @@ app.use("/api/settings", settingsRouter);
 
 
 
-// Accounting Core
+
+// Accounting
 
 app.use(
   "/api/accounting",
   accountingRouter
 );
+
+
 
 
 
@@ -113,12 +134,16 @@ app.use(
 
 
 
+
+
 // Financial Reports
 
 app.use(
   "/api/financial-reports",
   financialReportsRouter
 );
+
+
 
 
 
@@ -136,6 +161,7 @@ app.use(
 // Error Handler
 
 app.use((err,req,res,next)=>{
+
 
   console.error(
     "SERVER ERROR:",
@@ -157,12 +183,13 @@ app.use((err,req,res,next)=>{
 
 
 
-// Start
 
 app.listen(PORT,()=>{
+
 
   console.log(
     `SweetERP Backend يعمل على http://localhost:${PORT}`
   );
+
 
 });
