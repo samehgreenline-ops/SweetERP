@@ -78,8 +78,7 @@ const accountingManifest = {
 
 
 
-  menus: [
-
+    menus: [
 
     {
 
@@ -89,16 +88,58 @@ const accountingManifest = {
 
       icon: "AccountBalance",
 
-      path: "/accounting",
-
       permission:
-        "accounting.account.view"
+        "accounting.account.view",
+
+
+      children: [
+
+        {
+
+          id: "accounts",
+
+          title: "Chart of Accounts",
+
+          path: "/accounting/accounts",
+
+          permission:
+            "accounting.account.view"
+
+        },
+
+
+        {
+
+          id: "journal",
+
+          title: "Journal Entries",
+
+          path: "/accounting/journal",
+
+          permission:
+            "accounting.journal.view"
+
+        },
+
+
+        {
+
+          id: "ledger",
+
+          title: "Ledger",
+
+          path: "/accounting/ledger",
+
+          permission:
+            "accounting.ledger.view"
+
+        }
+
+      ]
 
     }
 
-
   ],
-
 
 
 
