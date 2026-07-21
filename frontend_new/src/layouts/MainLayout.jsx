@@ -41,23 +41,18 @@ const menuGroups = [
   {
     text: "المخزون",
     icon: <Inventory />,
-    permission: "inventory.view",
+    permission: "inventory.stock.view",
 
     children: [
       {
         text: "الأصناف",
         path: "/items",
-        permission: "items.view",
+        permission: "items.item.view",
       },
       {
         text: "حركة المخزون",
         path: "/inventory",
-        permission: "inventory.view",
-      },
-      {
-        text: "تقييم المخزون",
-        path: "/inventory-value",
-        permission: "inventory.view",
+        permission: "inventory.stock.view",
       },
     ],
   },
@@ -66,23 +61,18 @@ const menuGroups = [
   {
     text: "الإنتاج",
     icon: <Factory />,
-    permission: "production.view",
+    permission: "production.order.view",
 
     children: [
       {
         text: "الوصفات",
         path: "/recipes",
-        permission: "items.view",
+        permission: "items.item.view",
       },
       {
         text: "أوامر الإنتاج",
         path: "/production",
-        permission: "production.view",
-      },
-      {
-        text: "تكلفة الإنتاج",
-        path: "/production-cost",
-        permission: "production.view",
+        permission: "production.order.view",
       },
     ],
   },
@@ -91,23 +81,18 @@ const menuGroups = [
   {
     text: "المبيعات",
     icon: <ShoppingCart />,
-    permission: "sales.view",
+    permission: "sales.invoice.view",
 
     children: [
       {
         text: "فواتير البيع",
         path: "/sales",
-        permission: "sales.view",
+        permission: "sales.invoice.view",
       },
       {
         text: "العملاء",
         path: "/customers",
-        permission: "sales.view",
-      },
-      {
-        text: "تقارير المبيعات",
-        path: "/sales-reports",
-        permission: "reports.view",
+        permission: "customers.customer.view",
       },
     ],
   },
@@ -116,23 +101,18 @@ const menuGroups = [
   {
     text: "المشتريات",
     icon: <Receipt />,
-    permission: "purchases.view",
+    permission: "purchases.invoice.view",
 
     children: [
       {
         text: "فواتير الشراء",
         path: "/purchases",
-        permission: "purchases.view",
+        permission: "purchases.invoice.view",
       },
       {
         text: "الموردون",
         path: "/suppliers",
-        permission: "purchases.view",
-      },
-      {
-        text: "تقارير المشتريات",
-        path: "/purchase-reports",
-        permission: "reports.view",
+        permission: "suppliers.supplier.view",
       },
     ],
   },
@@ -141,38 +121,23 @@ const menuGroups = [
   {
     text: "الحسابات",
     icon: <AccountBalance />,
-    permission: "accounts.view",
+    permission: "accounting.account.view",
 
     children: [
       {
         text: "دليل الحسابات",
         path: "/accounting/accounts",
-        permission: "accounts.view",
+        permission: "accounting.account.view",
       },
       {
         text: "القيود اليومية",
         path: "/accounting/journal",
-        permission: "journal.view",
+        permission: "accounting.journal.view",
       },
       {
         text: "دفتر الأستاذ",
         path: "/accounting/ledger",
-        permission: "ledger.view",
-      },
-      {
-        text: "ميزان المراجعة",
-        path: "/accounting/trial-balance",
-        permission: "reports.view",
-      },
-      {
-        text: "قائمة الدخل",
-        path: "/accounting/income",
-        permission: "reports.view",
-      },
-      {
-        text: "المركز المالي",
-        path: "/accounting/balance-sheet",
-        permission: "reports.view",
+        permission: "accounting.ledger.view",
       },
     ],
   },
@@ -181,13 +146,13 @@ const menuGroups = [
   {
     text: "التقارير",
     icon: <Assessment />,
-    permission: "reports.view",
+    permission: "reports.report.view",
 
     children: [
       {
         text: "التقارير المالية",
         path: "/reports",
-        permission: "reports.view",
+        permission: "reports.report.view",
       },
     ],
   },
@@ -207,23 +172,17 @@ const menuGroups = [
       {
         text: "الأدوار والصلاحيات",
         path: "/roles",
-        permission: "users.manage",
+        permission: "roles.manage",
       },
       {
         text: "إعدادات الشركة",
         path: "/company-settings",
         permission: "users.manage",
       },
-      {
-        text: "إعدادات النظام",
-        path: "/system-settings",
-        permission: "users.manage",
-      },
     ],
   },
 
 ];
-
 
 
 function MainLayout() {
@@ -239,7 +198,6 @@ function MainLayout() {
   const [openGroups, setOpenGroups] = useState({});
 
 
-
   function toggleGroup(text) {
 
     setOpenGroups({
@@ -251,7 +209,6 @@ function MainLayout() {
     });
 
   }
-
 
 
   function renderLink(item) {
@@ -297,11 +254,7 @@ function MainLayout() {
 
     );
 
-  }
-
-
-
-  return (
+  }  return (
 
     <Box
 
@@ -369,6 +322,7 @@ function MainLayout() {
           </Typography>
 
 
+
           {user && (
 
             <Typography
@@ -396,99 +350,102 @@ function MainLayout() {
           <List>
 
 
-          {menuGroups.map((group)=>{
+            {menuGroups.map((group)=>{
 
 
-            if(group.children){
+              if(group.children){
 
 
-              const visibleChildren =
-                group.children.filter(
-                  item=>hasPermission(item.permission)
+                const visibleChildren =
+                  group.children.filter(
+                    item => hasPermission(item.permission)
+                  );
+
+
+                if(
+                  visibleChildren.length === 0 &&
+                  !hasPermission(group.permission)
+                ){
+
+                  return null;
+
+                }
+
+
+
+                return (
+
+                  <Box key={group.text}>
+
+
+                    <ListItemButton
+
+                      onClick={() =>
+                        toggleGroup(group.text)
+                      }
+
+                    >
+
+                      {group.icon}
+
+
+                      <ListItemText
+
+                        primary={group.text}
+
+                        sx={{mr:1}}
+
+                      />
+
+
+                      {
+                        openGroups[group.text]
+                        ?
+                        <ExpandLess/>
+                        :
+                        <ExpandMore/>
+                      }
+
+
+                    </ListItemButton>
+
+
+
+                    <Collapse
+
+                      in={openGroups[group.text]}
+
+                      timeout="auto"
+
+                      unmountOnExit
+
+                    >
+
+                      <List>
+
+                        {
+                          visibleChildren.map(renderLink)
+                        }
+
+                      </List>
+
+
+                    </Collapse>
+
+
+                  </Box>
+
                 );
 
-
-              if(
-                !hasPermission(group.permission)
-                &&
-                visibleChildren.length===0
-              ){
-
-                return null;
 
               }
 
 
 
-              return (
-
-                <Box key={group.text}>
+              return renderLink(group);
 
 
-                  <ListItemButton
-
-                    onClick={()=>toggleGroup(group.text)}
-
-                  >
-
-                    {group.icon}
-
-
-                    <ListItemText
-
-                      primary={group.text}
-
-                      sx={{mr:1}}
-
-                    />
-
-
-                    {
-                      openGroups[group.text]
-                      ?
-                      <ExpandLess/>
-                      :
-                      <ExpandMore/>
-                    }
-
-
-                  </ListItemButton>
-
-
-
-                  <Collapse
-
-                    in={openGroups[group.text]}
-
-                    timeout="auto"
-
-                    unmountOnExit
-
-                  >
-
-                    <List>
-
-                      {
-                        visibleChildren.map(renderLink)
-                      }
-
-                    </List>
-
-                  </Collapse>
-
-
-                </Box>
-
-              );
-
-
-            }
-
-
-            return renderLink(group);
-
-
-          })}
+            })}
 
 
           </List>
