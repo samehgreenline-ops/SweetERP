@@ -1,4 +1,5 @@
 import db from "./database.js";
+import { defaultPermissions } from "../core/security/permissions.js";
 
 function columnExists(table, column) {
   const columns = db.prepare(`PRAGMA table_info(${table})`).all();
@@ -142,44 +143,13 @@ if (!tableExists("permissions")) {
   console.log("Created permissions table");
 }
 
-
-const defaultPermissions = [
-  ["dashboard.view", "View Dashboard", "dashboard"],
-
-  ["items.view", "View Items", "items"],
-  ["items.create", "Create Items", "items"],
-  ["items.edit", "Edit Items", "items"],
-
-  ["inventory.view", "View Inventory", "inventory"],
-
-  ["production.view", "View Production", "production"],
-  ["production.create", "Create Production", "production"],
-
-  ["purchases.view", "View Purchases", "purchases"],
-  ["purchases.create", "Create Purchases", "purchases"],
-
-  ["sales.view", "View Sales", "sales"],
-  ["sales.create", "Create Sales", "sales"],
-
-  ["reports.view", "View Reports", "reports"],
-
-  ["users.manage", "Manage Users", "users"],
-
-  // Accounting
-  ["accounts.view", "View Accounts", "accounting"],
-  ["journal.view", "View Journal Entries", "accounting"],
-  ["ledger.view", "View General Ledger", "accounting"],
-  ["trial_balance.view", "View Trial Balance", "accounting"],
-  ["income_statement.view", "View Income Statement", "accounting"],
-  ["balance_sheet.view", "View Balance Sheet", "accounting"],
-];
 for (const permission of defaultPermissions) {
 
   const exists = db.prepare(`
     SELECT id
     FROM permissions
     WHERE code = ?
-  `).get(permission[0]);
+  `).get(permission.code);
 
 
   if (!exists) {
@@ -193,9 +163,9 @@ for (const permission of defaultPermissions) {
       )
       VALUES (?, ?, ?)
     `).run(
-      permission[0],
-      permission[1],
-      permission[2]
+      permission.code,
+      permission.name,
+      permission.module
     );
 
   }
