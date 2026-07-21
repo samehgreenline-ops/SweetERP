@@ -550,3 +550,88 @@ frontend_new/src/context/CompanyContext.jsx
 Current stable commit:
 
 a5a3fed
+
+---
+
+# Development Update - 21 July 2026
+
+## ERP Core Security Foundation Progress
+
+Latest Stable Commit:
+
+f0567ef - Add JWT authentication to ERP Core security
+
+
+## Completed Security Layers
+
+Implemented:
+
+✅ Permission definitions moved into ERP Core
+
+Location:
+
+backend/core/security/permissions.js
+
+
+✅ Database security foundation:
+
+- permissions
+- roles
+- users
+- role_permissions
+
+
+✅ JWT Authentication:
+
+Implemented:
+
+backend/routes/auth.js
+
+
+Features:
+
+- User login validation
+- JWT token generation
+- User identity payload
+- Role identification
+- Permission loading
+
+
+## Current Security Architecture
+
+Request
+
+↓
+
+JWT Authentication
+
+↓
+
+User Identity
+
+↓
+
+Authorization Layer (Next)
+
+
+## Current Development Phase
+
+ERP Core Security Enhancement
+
+
+## Next Step
+
+Build Authorization Middleware:
+
+Required:
+
+- JWT verification middleware
+- Permission checking middleware
+- Protect API routes based on permissions
+
+
+## Important Note
+
+Authentication is completed.
+
+Authorization enforcement is the next development layer.

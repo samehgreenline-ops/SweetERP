@@ -41,3 +41,45 @@ docs/PROJECT_MASTER_PLAN.md
 
 آخر مرجع تفصيلي:
 docs/PROJECT_MASTER_PLAN.md
+
+---
+
+# Session Update - 21 July 2026
+
+## Completed Today
+
+ERP Core Security Foundation expanded.
+
+Completed:
+
+- Moved permissions definitions into ERP Core security layer.
+- Added JWT authentication support.
+- Login now generates authentication token.
+- Verified admin login successfully.
+- Verified permissions loading from database.
+
+
+## Current Stable Commit
+
+f0567ef
+
+Add JWT authentication to ERP Core security
+
+
+## Next Task
+
+Implement Authorization Middleware:
+
+- Verify JWT tokens.
+- Attach authenticated user to requests.
+- Check required permissions.
+- Protect ERP API modules.
+
+
+## Current Project Direction
+
+Continue building ERP Core as a customizable ERP platform.
+
+Do not rebuild completed business modules.
+
+Continue extending the core foundation.
