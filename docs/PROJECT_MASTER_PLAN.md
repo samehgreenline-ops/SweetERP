@@ -86,7 +86,19 @@ Stable milestone:
 
 ERP Platform Core Menu Integration
 
+Latest Git Commit:
 
+85476fa Restore accounting and system settings menus
+
+Current status:
+
+- Module Manifest System working.
+- Accounting is the first registered ERP Platform module.
+- Dynamic module menus are loaded successfully.
+- Existing system menus are preserved.
+- Administration menus restored including System Settings.
+
+The platform foundation is ready for the next architecture phase.
 ---
 
 # Next Development Roadmap
